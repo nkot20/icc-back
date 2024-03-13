@@ -113,5 +113,5 @@ jobs:
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
             npm install
-            pm2 reload app
-            w pm2 show app
+            pm2 reload app1
+            w pm2 show app1
