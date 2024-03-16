@@ -1,0 +1,10 @@
+module.exports = {
+    ADMIN: 1,
+    API_USER: 2,
+    COMPANY_ADMIN: 3,
+    COMPANY_EMPLOYEE: 4,
+    COMPANY_CLIENT_ADMIN: 5,
+    COMPANY_CLIENT: 6,
+    OPCLAC_ADMIN: 7,
+    OPCLAC_OPS: 8,
+};
