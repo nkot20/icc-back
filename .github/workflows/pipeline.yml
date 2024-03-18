@@ -18,7 +18,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout repositories
         uses: actions/checkout@v4
 
       - name: Display current directory
@@ -36,7 +36,7 @@ jobs:
   #   needs: build
 
   #   steps:
-  #     - name: Checkout repository
+  #     - name: Checkout repositories
   #       uses: actions/checkout@v4
 
   #     - name: Set up Node.js

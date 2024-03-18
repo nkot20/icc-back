@@ -5,7 +5,7 @@ const { ExtractJwt } = passportJWT;
 
 const config = require('dotenv').config();
 
-const User = require('../models/user');
+const User = require('../models/User');
 
 module.exports = (passport) => {
   const jwtOptions = {
