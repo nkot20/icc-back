@@ -18,11 +18,7 @@ const companySchema = Schema({
     type: String,
     required: false,
   },
-  siren: {
-    type: String,
-    required: true,
-  },
-  vat: {
+  legalForm: {
     type: String,
     required: true,
   },

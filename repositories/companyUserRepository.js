@@ -19,10 +19,10 @@ class CompanyUserRepository {
         try {
             session.startTransaction();
             const userClient = client.db("ICC").collection("users");
-            const result_save_user = await userClient.save(user);
+            const result_save_user = await userClient.insertOne(user);
             const companyClient = client.db("ICC").collection("companies");
-            company.adminId = result_save_user._id;
-            companyClient.save(company);
+            company.adminId = result_save_user.insertedId;
+            await companyClient.insertOne(company);
             await session.commitTransaction();
         } catch (error) {
             console.log("An error occurred during the transaction:" + error);

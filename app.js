@@ -26,9 +26,9 @@ const app = express();
 //app.use(morganMiddleware);
 
 app.use(cors());
-app.use(errorHandler);
-app.use(notFoundHandler);
-app.use(asyncErrorHandler)
+//app.use(errorHandler);
+//app.use(notFoundHandler);
+//app.use(asyncErrorHandler)
 
 const options = {
   uploadDir: os.tmpdir(),
@@ -67,7 +67,7 @@ app.all('/*', (req, res, next) => {
 app.use('/assets', express.static('assets'));
 app.use('/public', express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
+app.use('/api/m4m/v1', indexRouter);
 
 
 // catch 404 and forward to error handler
