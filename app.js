@@ -13,7 +13,7 @@ const os = require('os');
 const cron = require('node-cron');
 const formData = require('express-form-data');
 const mongoClient = require('./ClientMongo/MongoClientTransaction');
-const indexRouter = require('./routes/index')
+const indexRouter = require('./routes/')
 
 const { errorHandler, asyncErrorHandler, notFoundHandler } = require('./middlewares/errorHandlers');
 

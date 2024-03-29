@@ -36,11 +36,6 @@ const companySchema = Schema({
     type: String,
     required: true,
   },
-  business_code: {
-    type: String,
-    required: false,
-    unique: true,
-  },
   customization: {
     primaryColor: {
       type: String,
@@ -69,6 +64,9 @@ const companySchema = Schema({
   ville: {
     type: [String],
   },
+  agreements: {
+    type: Boolean,
+  }
 
 }, { timestamps: true });
 
@@ -106,6 +104,7 @@ companySchema.pre('save', async function (next) {
   }
   next();
 });
+
 
 companySchema.plugin(aggregatePaginate);
 module.exports = company = mongoose.model('company', companySchema);

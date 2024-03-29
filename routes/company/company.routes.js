@@ -11,19 +11,21 @@ const CompanyCreateSchema = Joi.object({
         name: Joi.string().required(),
         address: Joi.string().required(),
         additionalAddress: Joi.optional(),
-        legalForm: Joi.string().required(),
-        phoneNumber: Joi.string().required(),
-        email: Joi.string().email().required(),
-        ville: Joi.string().required()
+        //legalForm: Joi.string().required(),
+        //phoneNumber: Joi.string().required(),
+        //email: Joi.string().email().required(),
+        //ville: Joi.string().required()
     }).required(),
     manager: Joi.object({
         firstName: Joi.string().required(),
         lastName: Joi.string().required(),
         phoneNumber: Joi.string().required(),
         email: Joi.string().email().required(),
-        password: Joi.string().required(),
-        contryCode: Joi.string().required(),
-        passwordConfirm: Joi.string().valid(Joi.ref('password')).required(),
+        function: Joi.string().required(),
+        agreements: Joi.boolean().required()
+        //password: Joi.string().required(),
+        //contryCode: Joi.string().required(),
+        //passwordConfirm: Joi.string().valid(Joi.ref('password')).required(),
     }).required(),
 
 });
@@ -34,13 +36,14 @@ router.post('/create', validateSchema(CompanyCreateSchema), async (req, res) => 
     } = req.body;
 
     const userPayload = {
-        user_login: manager.phoneNumber,
+        //user_login: manager.phoneNumber,
         email: manager.email,
-        user_pass: manager.password,
+        //user_pass: manager.password,
         first_name: manager.firstName,
         last_name: manager.lastName,
         mobile_no: manager.phoneNumber,
-        country_code: manager.contryCode,
+        function: manager.function,
+        //country_code: manager.contryCode,
         role: [Roles.COMPANY_ADMIN],
     };
     

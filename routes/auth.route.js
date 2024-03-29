@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const config = require('dotenv').config();
 const authMiddleware = require('../middlewares/authenticate.middleware');
-const User = require('../models/user');
+const User = require('../models/User');
 const logger = require('../logger');
 
 const timestamp = new Date();
@@ -27,6 +27,10 @@ const forgotPasswordSchema = Joi.object({
 const resetPasswordSchema = Joi.object({
   token: Joi.string().required(),
   password: Joi.string().required(),
+});
+
+const validateEmailSchema = Joi.object({
+  token: Joi.string().required(),
 });
 
 const generateAccessToken = (user) => {
@@ -183,6 +187,27 @@ router.post('/reset-password', validateSchema(resetPasswordSchema), (req, res) =
       res.json({ message: 'Password reset successful', result });
     }).catch((err) => {
       logger.error('Error resetting password', { error: err, timestamp });
+      // console.log('Error resetting password', err);
+      res.status(500).json({ error: 'Internal server error' });
+    });
+  } catch (err) {
+    logger.error('Internal server error', { error: err, timestamp });
+    // console.error(err);
+
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+router.post('/confirm-email', validateSchema(validateEmailSchema), (req, res) => {
+  try {
+    const { token } = req.body;
+
+    authController.confirmEmail(token).then((result) => {
+      logger.info('Email confirmed successful', { timestamp });
+
+      res.json({ message: 'Email confirmed successful', user: result });
+    }).catch((err) => {
+      logger.error('Error confriming Email', { error: err, timestamp });
       // console.log('Error resetting password', err);
       res.status(500).json({ error: 'Internal server error' });
     });
