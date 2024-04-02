@@ -58,14 +58,17 @@ const companySchema = Schema({
       default: '',
     },
   },
-  domains: {
-    type: [String],
+  domain: {
+    type: String,
   },
   ville: {
     type: [String],
   },
   agreements: {
     type: Boolean,
+  },
+  description: {
+    type: String,
   }
 
 }, { timestamps: true });

@@ -154,9 +154,7 @@ class CompanyRepository {
   async createCompany(data, status = 'active') {
     try {
       const company = new Company(data);
-      const result = await company.save();
-
-      return result;
+      return await company.save();
     } catch (error) {
       console.error(error);
       throw error;
@@ -165,9 +163,7 @@ class CompanyRepository {
 
   async updateCompany(companyId, data) {
     try {
-      const result = await Company.findOneAndUpdate({ _id: companyId }, data, { new: true });
-
-      return result;
+      return await Company.findOneAndUpdate({_id: companyId}, data, {new: true});
     } catch (error) {
       console.error(error);
       throw error;
@@ -176,11 +172,18 @@ class CompanyRepository {
 
   async getAllWithoutPaginnation() {
     try {
-      const result = await Company.find().sort({ name: 'asc' });
-
-      return result;
+      return await Company.find().sort({name: 'asc'});
     } catch (error) {
       console.error(error);
+      throw error;
+    }
+  }
+
+  async getCompanyByIdUserManager(id) {
+    try {
+      return await Company.findOne({adminId: id}).exec();
+    } catch (error) {
+      console.log(error);
       throw error;
     }
   }

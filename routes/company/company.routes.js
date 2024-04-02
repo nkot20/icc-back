@@ -5,6 +5,7 @@ const companyRepository = require('../../repositories/companyRepository');
 const validateSchema = require('../../middlewares/validationSchema');
 const router = express.Router();
 const Roles = require('../../config/role');
+const logger = require('../../logger');
 
 const CompanyCreateSchema = Joi.object({
     company: Joi.object({
@@ -57,7 +58,7 @@ router.post('/create', validateSchema(CompanyCreateSchema), async (req, res) => 
         let response = await companyUserRepository.createCompany(company, userPayload);
         return res.status(200).json("company saved sucessfuly")
     } catch (error) {
-        console.log(error);
+        logger.error('Error with creating business', { error: error });
         return res.status(400).json({
             error: error.message,
         });
@@ -93,7 +94,7 @@ router.get('/', async (req, res) => {
             pagination,
         });
     } catch (error) {
-        console.log('Error in getting companies', error);
+        logger.error('Error when searching for company', { error: error });
         return res.status(500).json({
             success: false,
             data: [],
@@ -111,7 +112,7 @@ router.get('/active', async (req, res) => {
             companies: response,
         });
     } catch (error) {
-        console.log('Error in getting active companies', error);
+        logger.error('Error in getting active companies', { error: error });
         return res.status(500).json({
             success: false,
             data: [],
@@ -133,7 +134,7 @@ router.get('/:id', async (req, res) => {
 
         res.json({ company, usersCount });
     }).catch((error) => {
-        console.log(error);
+        logger.error('Error in getting company by id', { error: error });
         res.status(400).json({
             error: error.message,
         });
@@ -150,7 +151,7 @@ router.patch('/:id', async (req, res) => {
 
         res.json(result);
     }).catch((error) => {
-        console.log(error);
+        logger.error('Error in updating company by id', { error: error });
         res.status(400).json({
             error: error.message,
         });
@@ -163,12 +164,23 @@ router.get('/all/all-no-pagination', async (req, res) => {
 
         res.send(result);
     }).catch((error) => {
-        console.log(error);
+        logger.error('Error in getting company without pagination', { error: error });
         res.status(400).json({
             error: error.message,
         });
     });
 });
 
+router.get('/admin-id/:id', async (req, res) => {
+    try {
+        const result = await companyRepository.getCompanyByIdUserManager(req.params.id);
+        res.status(200).send(result);
+    } catch (error) {
+        logger.error('Error in getting company by admin user', { error: error });
+        res.status(400).json({
+            error: error.message,
+        });
+    }
+})
 
 module.exports = router;

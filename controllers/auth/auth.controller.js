@@ -54,6 +54,7 @@ class AuthController {
       });
 
       logger.info('Password reset successful for user ' + user.email, { timestamp: timestamp });
+      return user;
     } catch (error) {
       logger.error('Error resetting password', error, { timestamp: timestamp });
       throw error;

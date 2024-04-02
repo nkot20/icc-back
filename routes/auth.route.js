@@ -181,10 +181,11 @@ router.post('/forgot-password', validateSchema(forgotPasswordSchema), (req, res)
 router.post('/reset-password', validateSchema(resetPasswordSchema), (req, res) => {
   try {
     const { token, password } = req.body;
-
     authController.resetPassword(token, password).then((result) => {
       logger.info('Password reset successful', { timestamp });
-      res.json({ message: 'Password reset successful', result });
+      const accessToken = generateAccessToken(result);
+      const refreshToken = generateRefreshToken(result);
+      res.status(200).json({ message: 'Password reset successful', result, accessToken, refreshToken });
     }).catch((err) => {
       logger.error('Error resetting password', { error: err, timestamp });
       // console.log('Error resetting password', err);
