@@ -2,7 +2,9 @@ require('dotenv').config();
 
 const Company = require('../models/Company');
 const User = require('../models/User');
-const Client = require('../ClientMongo/MongoClientTransaction')
+const Client = require('../ClientMongo/MongoClientTransaction');
+const emailService = require("../services/emailService");
+const crypto = require("crypto");
 
 class CompanyUserRepository {
     
@@ -18,15 +20,28 @@ class CompanyUserRepository {
 
         try {
             session.startTransaction();
+
+            // save user
             const userClient = client.db("ICC").collection("users");
-            const result_save_user = await userClient.save(user);
+            const token = crypto.randomBytes(20).toString('hex');
+            user.validationToken = token;
+            user.validationExpirationToken = Date.now() + 3600000;
+            user.validLink =  `${process.env.CONFIRM_ACCOUNT_LINK}/${token}`;
+            const result_save_user = await userClient.insertOne(user);
+
+            // save company
             const companyClient = client.db("ICC").collection("companies");
-            company.adminId = result_save_user._id;
-            companyClient.save(company);
+            company.adminId = result_save_user.insertedId;
+            await companyClient.insertOne(company);
+
+            //send email
+            await emailService.sendMailForValidateEmail(user);
+
             await session.commitTransaction();
         } catch (error) {
             console.log("An error occurred during the transaction:" + error);
             await session.abortTransaction();
+            throw error;
         } finally {
             await session.endSession();
         }

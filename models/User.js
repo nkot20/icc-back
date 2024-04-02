@@ -81,6 +81,20 @@ const UserSchema = new mongoose.Schema({
     type: [Number],
 
   },
+  isValided: {
+    type: Boolean,
+    default: false
+  },
+  validationToken: {
+    type: String
+  },
+  validationExpirationToken: {
+    type: Date
+  },
+  function: {
+    type: String
+  }
+
 
 });
 
@@ -142,7 +156,6 @@ UserSchema.methods.comparePassword = function (candidatePassword, callback) {
   }
 };
 
-UserSchema.index({ business_code: 1 });
 UserSchema.plugin(aggregatePaginate);
 
 const User = mongoose.model('users', UserSchema);

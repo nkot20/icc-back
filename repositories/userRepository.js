@@ -8,9 +8,7 @@ const timestamp = new Date();
 const userRepository = {
   async getUserByEmail(email) {
     try {
-      const result = await UserModel.findOne({ email });
-
-      return result;
+      return await UserModel.findOne({email});
     } catch (error) {
       console.error(error);
       throw error;
@@ -24,9 +22,7 @@ const userRepository = {
      */
   async getUserByTypeAndHandle(handle, type) {
     try {
-      const result = await UserModel.findOne({ [type]: handle });
-
-      return result;
+      return await UserModel.findOne({[type]: handle});
     } catch (error) {
       console.error(error);
       throw error;
@@ -35,9 +31,7 @@ const userRepository = {
 
   async getUserByPhone(phone) {
     try {
-      const result = await UserModel.findOne({ mobile_no: phone });
-
-      return result;
+      return await UserModel.findOne({mobile_no: phone});
     } catch (error) {
       console.error(error);
       throw error;
@@ -46,9 +40,7 @@ const userRepository = {
 
   async getUserById(userId) {
     try {
-      const result = await UserModel.findOne({ _id: userId });
-
-      return result;
+      return await UserModel.findOne({_id: userId});
     } catch (error) {
       console.error(error);
       throw error;
@@ -58,10 +50,8 @@ const userRepository = {
   async createUser(data) {
     try {
       const newUser = new UserModel(data);
-      const result = await newUser.save();
-
       //logger.info('User created successfully', { result, timestamp });
-      return result;
+      return await newUser.save();
     } catch (error) {
       //logger.error('Error creating user', { error });
       console.error(error);
@@ -71,9 +61,7 @@ const userRepository = {
 
   async updateUser(userId, data) {
     try {
-      const result = await UserModel.findOneAndUpdate({ _id: userId }, data, { new: true });
-
-      return result;
+      return await UserModel.findOneAndUpdate({_id: userId}, data, {new: true});
     } catch (error) {
       console.error(error);
       throw error;
@@ -82,9 +70,7 @@ const userRepository = {
 
   async getByCompany(companyId) {
     try {
-      const result = await UserModel.find({ company_id: companyId });
-
-      return result;
+      return await UserModel.find({company_id: companyId});
     } catch (error) {
       console.error(error);
       throw error;

@@ -18,11 +18,7 @@ const companySchema = Schema({
     type: String,
     required: false,
   },
-  siren: {
-    type: String,
-    required: true,
-  },
-  vat: {
+  legalForm: {
     type: String,
     required: true,
   },
@@ -39,11 +35,6 @@ const companySchema = Schema({
   phoneNumber: {
     type: String,
     required: true,
-  },
-  business_code: {
-    type: String,
-    required: false,
-    unique: true,
   },
   customization: {
     primaryColor: {
@@ -67,12 +58,18 @@ const companySchema = Schema({
       default: '',
     },
   },
-  domains: {
-    type: [String],
+  domain: {
+    type: String,
   },
   ville: {
     type: [String],
   },
+  agreements: {
+    type: Boolean,
+  },
+  description: {
+    type: String,
+  }
 
 }, { timestamps: true });
 
@@ -110,6 +107,7 @@ companySchema.pre('save', async function (next) {
   }
   next();
 });
+
 
 companySchema.plugin(aggregatePaginate);
 module.exports = company = mongoose.model('company', companySchema);
