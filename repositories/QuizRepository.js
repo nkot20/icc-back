@@ -2,7 +2,6 @@ require('dotenv').config();
 
 const Quiz = require('../models/Quiz');
 
-const crypto = require("crypto");
 const {ObjectId} = require("mongodb");
 
 class QuizRepository {

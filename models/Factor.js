@@ -1,4 +1,4 @@
-// factorModel.js
+// FactorModel.js
 const mongoose = require('mongoose');
 
 const FactorSchema = new mongoose.Schema({

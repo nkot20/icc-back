@@ -1,12 +1,5 @@
-// variableModel.js
+// VariableModel.js
 const mongoose = require('mongoose');
-
-const factorSchema = new mongoose.Schema({
-    name: {
-        type: String,
-    },
-    factors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'factors' }]
-});
 
 const VariableSchema = new mongoose.Schema({
     name: {
@@ -16,7 +9,9 @@ const VariableSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    factors: [factorSchema]
+    factors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'factors' }], // Les facteurs liés à cette variable
+    variables: [{ type: mongoose.Schema.Types.ObjectId, ref: 'variables' }], // Les variables liées à cette variable
+    footprint: { type: mongoose.Schema.Types.ObjectId, ref: 'footprints' }
 });
 
 const Variable = mongoose.model('variable', VariableSchema);
