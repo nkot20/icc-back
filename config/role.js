@@ -3,8 +3,6 @@ module.exports = {
     API_USER: 2,
     COMPANY_ADMIN: 3,
     COMPANY_EMPLOYEE: 4,
-    COMPANY_CLIENT_ADMIN: 5,
-    COMPANY_CLIENT: 6,
-    OPCLAC_ADMIN: 7,
-    OPCLAC_OPS: 8,
+    AUDITOR: 5,
+
 };

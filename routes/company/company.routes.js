@@ -6,6 +6,8 @@ const validateSchema = require('../../middlewares/validationSchema');
 const router = express.Router();
 const Roles = require('../../config/role');
 const logger = require('../../logger');
+const authMiddleware = require('../../middlewares/authenticate.middleware'); // changed previous middleware tokenValidate with this one
+
 
 const CompanyCreateSchema = Joi.object({
     company: Joi.object({
@@ -65,7 +67,7 @@ router.post('/create', validateSchema(CompanyCreateSchema), async (req, res) => 
     }
 });
 
-router.get('/', async (req, res) => {
+router.get('/', authMiddleware.authenticate, async (req, res) => {
     try {
         const options = {
             page: parseInt(req.query.page, 10) + 1,
@@ -103,7 +105,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/active', async (req, res) => {
+router.get('/active', authMiddleware.authenticate, async (req, res) => {
     try {
         const response = await companyRepository.getAllActiveCompanies();
 
@@ -141,7 +143,7 @@ router.get('/:id', async (req, res) => {
     });
 });
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', authMiddleware.authenticate, async (req, res) => {
     if (!req.params.id) res.status(400).json({ message: 'need id in params' });
 
     const { id } = req.params;
