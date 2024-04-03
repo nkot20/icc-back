@@ -9,8 +9,8 @@ const questionSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    factorId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'factors' }]
-});
+    factorId: { type: mongoose.Schema.Types.ObjectId, ref: 'factors' }
+}, { timestamps: true });
 
 const Question = mongoose.model('question', questionSchema);
 

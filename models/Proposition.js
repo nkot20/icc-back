@@ -5,12 +5,8 @@ const propositionSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    isForWeight: {
-        type: Boolean,
-        default: false,
-    },
-    questionId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'questions' }]
-});
+    questionId: { type: mongoose.Schema.Types.ObjectId, ref: 'questions' }
+}, { timestamps: true });
 
 const Question = mongoose.model('proposition', propositionSchema);
 

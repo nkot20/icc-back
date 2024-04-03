@@ -63,3 +63,6 @@ class VariableRepository {
         }
     }
 }
+
+const variableRepository = new VariableRepository();
+module.exports = variableRepository;

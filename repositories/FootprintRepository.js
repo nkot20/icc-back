@@ -6,10 +6,9 @@ const Factor = require('../models/Factor');
 
 
 class FootprintRepository {
-    async createFootprint(footprintName) {
+    async createFootprint(datas) {
         try {
-            const newFootprint = new Footprint({ name: footprintName });
-            return await newFootprint.save();
+            return await Footprint.create(datas)
         } catch (error) {
             console.error("Erreur lors de la création de l'empreinte:", error);
             throw error;
@@ -41,8 +40,10 @@ class FootprintRepository {
     }
 
     async addVariableToFootprint(footprintId, variableId) {
+
         try {
-            let footprint = await Footprint.findById(footprintId);
+            console.log("variable", variableId)
+            const footprint = await Footprint.findById(footprintId);
 
             // Vérifier si l'empreinte existe
             if (!footprint) {
@@ -50,12 +51,23 @@ class FootprintRepository {
             }
 
             // Ajouter l'ID de la variable à la liste des variables de l'empreinte
-            footprint.variables.push(variableId);
+            let variables = [];
+            if (!Array.isArray(footprint.variables)) {
+                variables.push(variableId);
+            } else {
+                variables = footprint.variables;
+                variables.push(variableId);
+            }
+
+            let newData = {
+                name: footprint.name,
+                variables: variables,
+            }
+            console.log(newData)
+
 
             // Enregistrer les modifications de l'empreinte
-            await Footprint.updateOne(footprint);
-
-            return footprint;
+            return await Footprint.updateOne({_id: footprint._id}, newData, {new: true});
         } catch (error) {
             console.error("Erreur lors de l'ajout de la variable à l'empreinte:", error);
             throw error;
@@ -63,3 +75,6 @@ class FootprintRepository {
     }
 
 }
+
+const footprintRepository = new FootprintRepository();
+module.exports = footprintRepository;

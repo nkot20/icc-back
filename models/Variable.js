@@ -9,10 +9,10 @@ const VariableSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    factors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'factors' }], // Les facteurs liés à cette variable
+    //factors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'factors' }], // Les facteurs liés à cette variable
     variables: [{ type: mongoose.Schema.Types.ObjectId, ref: 'variables' }], // Les variables liées à cette variable
-    footprint: { type: mongoose.Schema.Types.ObjectId, ref: 'footprints' }
-});
+    footprintId: { type: mongoose.Schema.Types.ObjectId, ref: 'footprints' }
+}, { timestamps: true });
 
 const Variable = mongoose.model('variable', VariableSchema);
 

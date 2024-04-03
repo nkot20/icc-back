@@ -23,3 +23,6 @@ class FactorRepository {
         }
     }
 }
+
+const factorRepository = new FactorRepository();
+module.exports = factorRepository;

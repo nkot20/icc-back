@@ -55,10 +55,10 @@ router.post('/create', validateSchema(CompanyCreateSchema), async (req, res) => 
         company.status = 'Active';
         company.domains = [];
 
-        // create company subscription plan
+        // create Company subscription plan
 
         let response = await companyUserRepository.createCompany(company, userPayload);
-        return res.status(200).json("company saved sucessfuly")
+        return res.status(200).json("Company saved sucessfuly")
     } catch (error) {
         logger.error('Error with creating business', { error: error });
         return res.status(400).json({
@@ -96,7 +96,7 @@ router.get('/', authMiddleware.authenticate, async (req, res) => {
             pagination,
         });
     } catch (error) {
-        logger.error('Error when searching for company', { error: error });
+        logger.error('Error when searching for Company', { error: error });
         return res.status(500).json({
             success: false,
             data: [],
@@ -136,7 +136,7 @@ router.get('/:id', async (req, res) => {
 
         res.json({ company, usersCount });
     }).catch((error) => {
-        logger.error('Error in getting company by id', { error: error });
+        logger.error('Error in getting Company by id', { error: error });
         res.status(400).json({
             error: error.message,
         });
@@ -153,7 +153,7 @@ router.patch('/:id', authMiddleware.authenticate, async (req, res) => {
 
         res.json(result);
     }).catch((error) => {
-        logger.error('Error in updating company by id', { error: error });
+        logger.error('Error in updating Company by id', { error: error });
         res.status(400).json({
             error: error.message,
         });
@@ -162,11 +162,11 @@ router.patch('/:id', authMiddleware.authenticate, async (req, res) => {
 
 router.get('/all/all-no-pagination', async (req, res) => {
     companyRepository.getAllWithoutPaginnation().then((result) => {
-        if (!result) return res.status(404).json({ message: 'no company found' });
+        if (!result) return res.status(404).json({ message: 'no Company found' });
 
         res.send(result);
     }).catch((error) => {
-        logger.error('Error in getting company without pagination', { error: error });
+        logger.error('Error in getting Company without pagination', { error: error });
         res.status(400).json({
             error: error.message,
         });
@@ -178,7 +178,7 @@ router.get('/admin-id/:id', async (req, res) => {
         const result = await companyRepository.getCompanyByIdUserManager(req.params.id);
         res.status(200).send(result);
     } catch (error) {
-        logger.error('Error in getting company by admin user', { error: error });
+        logger.error('Error in getting Company by admin user', { error: error });
         res.status(400).json({
             error: error.message,
         });

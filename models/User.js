@@ -96,7 +96,7 @@ const UserSchema = new mongoose.Schema({
   }
 
 
-});
+}, { timestamps: true });
 
 // Hash the password before saving
 UserSchema.pre('save', function (next) {
