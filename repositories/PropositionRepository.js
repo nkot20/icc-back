@@ -67,7 +67,8 @@ class PropositionRepository {
                             footprint: '$footprint.name',
                             variable: '$variable.name',
                             factor: '$factor.name',
-                            question: '$question.label'
+                            question: '$question.label',
+                            questionId: '$question._id',
                         },
                         propositions: { $push: '$$ROOT' }
                     }
@@ -81,6 +82,7 @@ class PropositionRepository {
                         },
                         questions: {
                             $push: {
+                                _id: '$_id.questionId',
                                 question: '$_id.question',
                                 propositions: '$propositions'
                             }

@@ -36,7 +36,7 @@ router.patch('/variable/add/:id', validateSchema(variableCreateSchema), async (r
         }
         const variable = await variableRepository.create(datas);
         // let footprint = await footprintRepository.addVariableToFootprint(req.params.id, variable._id);
-        return res.status(200).json({message: "variable saved sucessfuly", footprint})
+        return res.status(200).json({message: "variable saved sucessfuly", variable})
     } catch (error) {
         logger.error('Error when adding variable to footprint', { error: error });
         return res.status(400).json({
