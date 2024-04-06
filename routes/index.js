@@ -8,6 +8,7 @@ const footprintRoutes = require('./Footprint');
 const questionRoutes = require('./Questions');
 const propositionQuestionRoutes = require('./Proposition');
 const answerRoutes = require('./Answer')
+const usagerRoutes = require('./Usager');
 
 
 router.use('/companies', companyRoutes);
@@ -17,6 +18,7 @@ router.use('/footprint', footprintRoutes);
 router.use('/question', questionRoutes);
 router.use('/proposition', propositionQuestionRoutes);
 router.use('/answer', answerRoutes);
+router.use('/usager', usagerRoutes)
 
 
 

@@ -56,5 +56,5 @@ const UsagerSchema = new mongoose.Schema({
 
 UsagerSchema.plugin(aggregatePaginate);
 
-const Usager = mongoose.model('usager', UsagerSchema);
-module.exports = Usager;
+const usager = mongoose.model('usager', UsagerSchema);
+module.exports = usager;

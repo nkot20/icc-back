@@ -5,19 +5,20 @@ const router = express.Router();
 const logger = require('../../logger');
 const authMiddleware = require('../../middlewares/authenticate.middleware');
 const propositionRepository = require('../../repositories/PropositionRepository')
-const questionCreateSchema = Joi.object({
+const propositionCreateSchema = Joi.object({
     label: Joi.string().required(),
+    value: Joi.number().required(),
 });
 
 //create question proposition
-router.post('/question/add/:id', validateSchema(questionCreateSchema), async (req, res) => {
+router.post('/question/add', async (req, res) => {
     try {
-        let datas = {
-            label: req.body.label,
-            questionId: req.params.id
-        }
-        let proposition = await propositionRepository.create(datas);
-        return res.status(200).json({message: "proposition saved sucessfuly", proposition})
+        let datas = req.body
+        const promise = datas.map(async (value) => {
+            return await propositionRepository.create(value)
+        });
+        const response = await Promise.all(promise);
+        return res.status(200).json({message: "proposition saved sucessfuly", response})
     } catch (error) {
         logger.error('Error when creating proposition', { error: error });
         return res.status(400).json({

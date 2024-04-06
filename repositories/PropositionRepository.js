@@ -69,6 +69,7 @@ class PropositionRepository {
                             factor: '$factor.name',
                             question: '$question.label',
                             questionId: '$question._id',
+                            questionType: '$question.type'
                         },
                         propositions: { $push: '$$ROOT' }
                     }
@@ -84,6 +85,7 @@ class PropositionRepository {
                             $push: {
                                 _id: '$_id.questionId',
                                 question: '$_id.question',
+                                type: '$_id.questionType',
                                 propositions: '$propositions'
                             }
                         }

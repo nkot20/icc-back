@@ -5,13 +5,17 @@ const questionSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    isForWeight: {
+    type: {
+        type: String,
+        enum: ['radio', 'checkbox'],
+        required: true,
+    },
+    weighting: { /// to know if question is a exam question with points or it's just to get information (factor weight or information)
         type: Boolean,
-        default: false,
     },
     factorId: { type: mongoose.Schema.Types.ObjectId, ref: 'factors' }
 }, { timestamps: true });
 
-const Question = mongoose.model('question', questionSchema);
+const question = mongoose.model('question', questionSchema);
 
-module.exports = Question;
+module.exports = question;

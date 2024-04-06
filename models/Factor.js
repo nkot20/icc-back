@@ -10,9 +10,13 @@ const FactorSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    dafaultWeight: {
+        type: Number,
+        default: 7
+    },
     variableId: { type: mongoose.Schema.Types.ObjectId, ref: 'variables' }
 }, { timestamps: true });
 
-const Factor = mongoose.model('factor', FactorSchema);
+const factor = mongoose.model('factor', FactorSchema);
 
-module.exports = Factor;
+module.exports = factor;

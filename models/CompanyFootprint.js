@@ -7,6 +7,6 @@ const companyFootprintSchema = new mongoose.Schema({
     footprintId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'footprints' }],
 }, { timestamps: true });
 
-const footprint = mongoose.model('companyFootprints', companyFootprintSchema);
+const companyFoot = mongoose.model('companyFootprints', companyFootprintSchema);
 
-module.exports = footprint;
+module.exports = companyFoot;

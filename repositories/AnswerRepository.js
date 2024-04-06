@@ -1,21 +1,28 @@
 require('dotenv').config();
 const Answer = require('../models/Answer');
 const Usager = require('../models/Usager');
+const Quiz = require('../models/Quiz');
+const calculPointRepository = require('../repositories/CaculPointRepository');
 const {ObjectId} = require("mongodb");
+
 
 class AnswerRepository {
 
     async create(usager, propositions, quizId) {
         try {
-            let result = await Usager.findOne({email: usager.email});
-            if (!result) {
-                result =  await Usager.create(usager);
+            const quiz = await Quiz.findById(quizId);
+            if (!quiz) {
+                throw new Error('Quiz doesn\'t exist !');
+            }
+            let resultUsager = await Usager.findOne({email: usager.email});
+            if (!resultUsager) {
+                resultUsager =  await Usager.create(usager);
             }
             let datas = [];
             propositions.forEach((value) => {
                 datas.push({
                     propositionId: new ObjectId(value),
-                    usagerId: result._id,
+                    usagerId: resultUsager._id,
                     quizId: new ObjectId(quizId)
                 })
             })
@@ -26,7 +33,9 @@ class AnswerRepository {
                 console.log("Creating Answer with value:", value);
                 return await Answer.create(value);
             });
-            return await Promise.all(promises);
+            const answers = await Promise.all(promises);
+            return await calculPointRepository.calculFinalPoint(resultUsager._id, quiz.companyId, '660ef07d12bd44b5e6ae8085',quizId);
+
         } catch (error) {
             console.error(error)
             throw error;

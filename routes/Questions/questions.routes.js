@@ -9,18 +9,20 @@ const authMiddleware = require('../../middlewares/authenticate.middleware');
 const questionRepository = require('../../repositories/QuestionRepository')
 const questionCreateSchema = Joi.object({
     label: Joi.string().required(),
-    isForWeight: Joi.boolean()
+    type: Joi.string().required(),
+    weighting: Joi.boolean().required(),
+    factorId: Joi.string().required()
 });
 
-router.post('/add/factor/:id',  validateSchema(questionCreateSchema), async (req, res) => {
+router.post('/add/factor', async (req, res) => {
     try {
-        let datas = {
-            label: req.body.label,
-            isForWeight: req.body.isForWeight,
-            factorId: req.params.id
-        }
-        let question = await questionRepository.create(datas);
-        return res.status(200).json({message: "question saved sucessfuly", question})
+        const datas = req.body;
+        const promise = datas.map(async (value) => {
+            return await questionRepository.create(value);
+        });
+        const response = await Promise.all(promise);
+
+        return res.status(200).json({message: "question saved sucessfuly", response})
     } catch (error) {
         logger.error('Error when creating question', { error: error });
         return res.status(400).json({

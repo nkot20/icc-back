@@ -7,6 +7,6 @@ const quizQuestionSchema = new mongoose.Schema({
     questionId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'questions' }],
 }, { timestamps: true });
 
-const footprint = mongoose.model('quizQuestion', quizQuestionSchema);
+const quizQuestion = mongoose.model('quizQuestion', quizQuestionSchema);
 
-module.exports = footprint;
+module.exports = quizQuestion;

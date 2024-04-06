@@ -158,5 +158,5 @@ UserSchema.methods.comparePassword = function (candidatePassword, callback) {
 
 UserSchema.plugin(aggregatePaginate);
 
-const User = mongoose.model('users', UserSchema);
-module.exports = User;
+const user = mongoose.model('users', UserSchema);
+module.exports = user;
