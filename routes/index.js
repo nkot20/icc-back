@@ -18,7 +18,8 @@ router.use('/footprint', footprintRoutes);
 router.use('/question', questionRoutes);
 router.use('/proposition', propositionQuestionRoutes);
 router.use('/answer', answerRoutes);
-router.use('/usager', usagerRoutes)
+router.use('/usager', usagerRoutes);
+
 
 
 

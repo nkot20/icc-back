@@ -14,7 +14,7 @@ class UsagerRepository {
             // Pour chaque usager ayant répondu au quiz, calculer le nombre de points
             await Promise.all(distinctReponses.map(async (usagerId) => {
                 // Calculer le nombre de points pour cet usager en utilisant la fonction calculFinalPoint
-                const points = await calculPointRepository.calculFinalPoint(usagerId, companyId, empreinteId, quizId);
+                const points = await calculPointRepository.calculEmpreinte(usagerId, companyId, empreinteId, quizId);
                 pointsUsagers[usagerId] = points;
             }));
 
@@ -29,7 +29,7 @@ class UsagerRepository {
                     points: Math.floor(pointsUsagers[usagerId]) || 0 // Si l'usager n'a pas de points calculés, mettre 0
                 };
             }));
-
+            console.log(usagersAvecPoints)
             return usagersAvecPoints;
         } catch (error) {
             console.error("Une erreur est survenue lors de la récupération de la liste des usagers:", error);
@@ -37,6 +37,21 @@ class UsagerRepository {
         }
     }
 
+    async getUsagerDetailsRepondusAuQuizz(quizId, usagerId, companyId, empreinteId) {
+        try {
+            // Récupérer les informations de l'usager
+            const usager = await Usager.findById(usagerId).lean();
+            // Créer un objet pour stocker le nombre de points de chaque usager
+            const points = await calculPointRepository.calculEmpreinte(usagerId, companyId, empreinteId, quizId);
+            return {
+                ...usager,
+                points: Math.floor(points) || 0 // Si l'usager n'a pas de points calculés, mettre 0
+            };
+        } catch (error) {
+            console.error("Une erreur est survenue lors de la récupération de la liste des usagers:", error);
+            return [];
+        }
+    }
 
 }
 

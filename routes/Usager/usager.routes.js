@@ -17,6 +17,18 @@ router.get('/quiz/:id/:company', async (req, res) => {
             error: error.message,
         });
     }
+});
+
+router.get('/usager/:usagerId/:companyId/:quizzId', async (req, res) => {
+    try {
+        let result = await usagerRepository.getUsagerDetailsRepondusAuQuizz(req.params.quizzId, req.params.usagerId, req.params.companyId, '660ef07d12bd44b5e6ae8085');
+        res.status(200).send(result);
+    } catch (error) {
+        logger.error('Error with getting usager list', { error: error });
+        return res.status(400).json({
+            error: error.message,
+        });
+    }
 })
 
 module.exports = router;

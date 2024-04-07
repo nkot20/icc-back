@@ -12,7 +12,7 @@ const FactorSchema = new mongoose.Schema({
     },
     dafaultWeight: {
         type: Number,
-        default: 7
+        default: 6
     },
     variableId: { type: mongoose.Schema.Types.ObjectId, ref: 'variables' }
 }, { timestamps: true });

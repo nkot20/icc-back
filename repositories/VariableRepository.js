@@ -3,6 +3,7 @@ require('dotenv').config();
 const Footprint = require('../models/Footprint');
 const Variable = require('../models/Variable');
 const Factor = require('../models/Factor');
+const Weight = require('../models/Weight');
 
 class VariableRepository {
     async create(variable) {
@@ -62,6 +63,60 @@ class VariableRepository {
             throw error;
         }
     }
+
+    async getVariablesByCompany(companyId) {
+        try {
+            // Récupérer les variables avec leurs facteurs
+            const variablesWithFactors = await Variable.aggregate([
+                {
+                    $lookup: {
+                        from: 'factors',
+                        localField: '_id',
+                        foreignField: 'variableId',
+                        as: 'factors'
+                    }
+                }
+            ]);
+
+            // Pour chaque variable, ajouter les poids correspondants aux facteurs
+            const variablesWithWeights = await Promise.all(variablesWithFactors.map(async (variable) => {
+                // Pour chaque facteur de la variable
+                const promises = variable.factors.map(async (factor) => {
+                    // Récupérer le poids le plus récent pour ce facteur et cette société
+                    const weight = await Weight.findOne({ factorId: factor._id, companyId })
+                        .sort({ createdAt: -1 })
+                        .limit(1);
+
+                    // Si un poids est trouvé, utiliser sa valeur, sinon utiliser le poids par défaut
+                    console.log(factor.dafaultWeight)
+                    if (weight !== undefined && weight !== null) {
+                        factor.latestWeight = weight.value;
+                    }
+                    if (weight === undefined || weight === null) {
+                        factor.latestWeight = factor.dafaultWeight;
+                    }
+                    console.log(factor)
+                    return factor;
+                });
+
+
+//              Attendre que toutes les promesses se résolvent
+                await Promise.all(promises);
+
+                return {
+                    _id: variable._id,
+                    name: variable.name,
+                    factors: variable.factors
+                };
+            }));
+
+            return variablesWithWeights;
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
 }
 
 const variableRepository = new VariableRepository();

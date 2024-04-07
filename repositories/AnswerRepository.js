@@ -21,9 +21,10 @@ class AnswerRepository {
             let datas = [];
             propositions.forEach((value) => {
                 datas.push({
-                    propositionId: new ObjectId(value),
+                    propositionId: new ObjectId(value.id),
                     usagerId: resultUsager._id,
-                    quizId: new ObjectId(quizId)
+                    quizId: new ObjectId(quizId),
+                    value: value.value
                 })
             })
             console.log(datas)
@@ -34,7 +35,7 @@ class AnswerRepository {
                 return await Answer.create(value);
             });
             const answers = await Promise.all(promises);
-            return await calculPointRepository.calculFinalPoint(resultUsager._id, quiz.companyId, '660ef07d12bd44b5e6ae8085',quizId);
+            return await calculPointRepository.calculEmpreinte(resultUsager._id, quiz.companyId, '660ef07d12bd44b5e6ae8085',quizId);
 
         } catch (error) {
             console.error(error)
