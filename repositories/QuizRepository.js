@@ -2,7 +2,6 @@ require('dotenv').config();
 
 const Quiz = require('../models/Quiz');
 
-const crypto = require("crypto");
 const {ObjectId} = require("mongodb");
 
 class QuizRepository {
@@ -27,11 +26,11 @@ class QuizRepository {
     async findByCompany(id) {
         try {
             let quizList = await Quiz.find({companyId: [new ObjectId(id)]});
-            // Trier la liste de quiz par ordre décroissant de la date de création
+            // Trier la liste de Quiz par ordre décroissant de la date de création
             quizList.sort((a, b) => {
                 return new Date(b.createdAt) - new Date(a.createdAt);
             });
-            // Formater la date createdAt pour chaque quiz
+            // Formater la date createdAt pour chaque Quiz
             const formattedQuizList = quizList.map(quiz => {
                 const createdAt = quiz.createdAt;
                 const formattedDate = `${createdAt.getHours()}/${createdAt.getMonth() + 1}/${createdAt.getFullYear()}`;

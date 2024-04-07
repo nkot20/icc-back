@@ -75,15 +75,15 @@ class CompanyRepository {
   // Get Company
   async getCompany(id) {
     try {
-      // Retrieve the company document
+      // Retrieve the Company document
       const company = await Company.findById(id);
 
       if (!company) {
         return null;
       }
 
-      // Retrieve all users belonging to the company based on the companyId field
-      // const users = await User.find({ business_code: company.business_code });
+      // Retrieve all users belonging to the Company based on the companyId field
+      // const users = await User.find({ business_code: Company.business_code });
 
       return company;
     } catch (error) {

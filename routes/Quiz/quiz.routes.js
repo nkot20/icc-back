@@ -19,7 +19,7 @@ router.post('/', validateSchema(QuizzCreateSchema), async (req, res) => {
         let result = await quizRepository.create(req.body);
         res.status(200).send(result);
     } catch (error) {
-        logger.error('Error with creating quiz', { error: error });
+        logger.error('Error with creating Quiz', { error: error });
         return res.status(400).json({
             error: error.message,
         });
@@ -31,7 +31,7 @@ router.get('/:id', async (req, res) => {
         let result = await quizRepository.findByCompany(req.params.id);
         res.status(200).send(result);
     } catch (error) {
-        logger.error('Error with getting quiz', { error: error });
+        logger.error('Error with getting Quiz', { error: error });
         return res.status(400).json({
             error: error.message,
         });
@@ -43,7 +43,7 @@ router.patch('/:id', async (req, res) => {
         let result = await quizRepository.update(req.params.id, req.body);
         res.status(200).send(result);
     } catch (error) {
-        logger.error('Error with updating quiz', { error: error });
+        logger.error('Error with updating Quiz', { error: error });
         return res.status(400).json({
             error: error.message,
         });

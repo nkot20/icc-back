@@ -31,4 +31,4 @@ const quizSchema = Schema({
 
 
 quizSchema.plugin(aggregatePaginate);
-module.exports = company = mongoose.model('quiz', quizSchema);
+module.exports = quiz = mongoose.model('quiz', quizSchema);

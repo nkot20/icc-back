@@ -6,6 +6,8 @@ const config = require('dotenv').config();
 const authMiddleware = require('../middlewares/authenticate.middleware');
 const User = require('../models/User');
 const logger = require('../logger');
+const ROLE = require('../config/role');
+const companyRepository = require('../repositories/companyRepository');
 
 const timestamp = new Date();
 
@@ -61,7 +63,7 @@ router.post('/login', validateSchema(loginSchema), async (req, res, next) => {
         return res.status(401).json({ message: 'Authentication failed. User not found.' });
       }
 
-      user.comparePassword(password, (err, isMatch) => {
+      user.comparePassword(password, async (err, isMatch) => {
         if (err || !isMatch) {
           logger.error(`Authentication failed. Invalid password for user ${email}`, {
             user_email: email,
@@ -78,9 +80,16 @@ router.post('/login', validateSchema(loginSchema), async (req, res, next) => {
           user_email: user.email,
           timestamp,
         });
-        res.json({
-          message: 'Authentication successful', accessToken, refreshToken, user,
-        });
+        if (hasRole(user.role, ROLE.COMPANY_ADMIN)) {
+          const company = await companyRepository.getCompanyByIdUserManager(user.id)
+          res.json({
+            message: 'Authentication successful', accessToken, refreshToken, user, company
+          });
+        } else {
+          res.json({
+            message: 'Authentication successful', accessToken, refreshToken, user,
+          });
+        }
       });
     });
   } catch (err) {
@@ -158,7 +167,7 @@ router.post('/token/refresh', (req, res) => {
   });
 });
 
-router.post('/forgot-password', validateSchema(forgotPasswordSchema), (req, res) => {
+router.post('/forgot-password', authMiddleware.authenticate, validateSchema(forgotPasswordSchema), (req, res) => {
   try {
     const { email } = req.body;
 
@@ -219,5 +228,16 @@ router.post('/confirm-email', validateSchema(validateEmailSchema), (req, res) =>
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
+function hasRole(roles, role) {
+  // Vérifier si roles est un tableau
+  if (!Array.isArray(roles)) {
+    throw new Error('Le premier argument doit être un tableau.');
+  }
+
+  // Utiliser la méthode includes() pour vérifier si le rôle est présent dans le tableau
+  return roles.includes(role);
+}
 
 module.exports = router;

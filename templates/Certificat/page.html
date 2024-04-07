@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Page_de_garde</title>
+    <style>
+        #bord1 {
+            border-top: 10px solid #C0C0C0;
+            border-left: 10px solid #C0C0C0;
+            border-bottom: 10px solid #691D6E;
+            border-right: 10px solid #691D6E;
+            padding: 2px;
+            width: 770px;
+            position: absolute;
+            top: 15px;
+            left: 5%;
+        }
+
+        #bord2 {
+            border-top: 10px solid #691D6E;
+            border-left: 10px solid #691D6E;
+            border-bottom: 10px solid #C0C0C0;
+            border-right: 10px solid #C0C0C0;
+            padding: 10px;
+
+        }
+
+        h1,
+        h2,
+        p {
+            text-align: center;
+        }
+
+        #image_center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: -18px;
+        }
+
+        .text {
+            width: auto;
+            text-align: justify;
+            color: #BFBFBE;
+            margin-top: -15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="bord1">
+        <div id="bord2">
+            <div id="entete">
+                <img src="{{logocavie}}" width="170px" height="170px" />
+                <img src="{{logoprepa}}" width="170px" height="170px"
+                     style="position: absolute; right: 0%; padding-right: 30px;" />
+            </div>
+            <h2 style="margin-top: -10px">CERTIFICAT</h2>
+            <p id="intro">
+                Vu l'évaluation du {{date}} <br/>
+                Vu la décision du {{date}} qui en a résulté
+            </p>
+            <p>
+            <h1 style="text-transform: uppercase;">empreinte formation</h1>
+            <div class="">
+                <img src="{{diamantlogo}}" style="margin-left: 35%" width="200px" height="200px" />
+            </div>
+            <p> est décerné à </p>
+            <h1 style="text-transform: uppercase;">{{lastname}} <span style="text-transform: capitalize;"> {{firstname}}</span>
+            </h1>
+            </p>
+            <p>
+                Pour vérifier l'authenticité de ce score <br/><br/>
+                <img src="{{qrcode}}" alt="QRcode" style="width: 150px;height: 150px;" /><br/><br/>
+                Date d'expiration {{dateExpiration}}
+            </p><br />
+            <p class="text">
+                Ce certificat demeurera en vigueur jusqu'à sa fin de validité à moins d'avis contraire,
+                à condition que la mise en place et la conformité aux exigences de référentiels d'amélioration continue
+                soient jugées satisfaisantes lors des audits de surveillance et que les conditions générales
+                d'utilisation
+                et la charte éthique soient observées.
+            </p>
+            <div id="footer">
+                <div id="image_footer">
+                    <img src="{{humanbetlogo}}" width="130px" height="100px" />
+                    <img src="{{mmlogo}}" width="130px" height="100px"
+                         style="position: absolute; right: 0%; padding-right: 30px;" />
+                </div>
+                <p style="font-style: italic;    color: #BFBFBE;">
+                    Des informations complémentaires concernant son champ d'application sont disponibles sur demande,
+                    conformément aux dispositions en vigueur à l'adresse suivante: contact@m4moveralls.com
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

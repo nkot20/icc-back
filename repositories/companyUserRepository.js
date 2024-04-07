@@ -9,7 +9,7 @@ const crypto = require("crypto");
 class CompanyUserRepository {
     
     /**
-     * create company and user that will be admin to this company
+     * create Company and user that will be admin to this Company
      * @param company
      * @param user
      * @returns {Promise<void>}
@@ -29,7 +29,7 @@ class CompanyUserRepository {
             user.validLink =  `${process.env.CONFIRM_ACCOUNT_LINK}/${token}`;
             const result_save_user = await userClient.insertOne(user);
 
-            // save company
+            // save Company
             const companyClient = client.db("ICC").collection("companies");
             company.adminId = result_save_user.insertedId;
             await companyClient.insertOne(company);

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const quizRepository = require('./quiz.routes');
+const factorRouter = require('./factor.routes');
 
-router.use('/', quizRepository);
+router.use('/', factorRouter);
 
 
 module.exports = router

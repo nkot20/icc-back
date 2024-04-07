@@ -96,7 +96,7 @@ const UserSchema = new mongoose.Schema({
   }
 
 
-});
+}, { timestamps: true });
 
 // Hash the password before saving
 UserSchema.pre('save', function (next) {
@@ -158,5 +158,5 @@ UserSchema.methods.comparePassword = function (candidatePassword, callback) {
 
 UserSchema.plugin(aggregatePaginate);
 
-const User = mongoose.model('users', UserSchema);
-module.exports = User;
+const user = mongoose.model('users', UserSchema);
+module.exports = user;
