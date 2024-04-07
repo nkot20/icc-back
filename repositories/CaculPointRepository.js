@@ -243,6 +243,165 @@ class CaculPointRepository {
             throw error;
         }
     }
+
+    async getMinimumPointsByVariable(companyId, quizId, empreinteId) {
+        try {
+            // Récupérer tous les usagers ayant répondu au quiz donné
+            const usagers = await Answer.distinct('usagerId', { quizId });
+
+            // Tableau pour stocker les valeurs minimales de chaque variable
+            const minimumPointsByVariable = {};
+
+            // Pour chaque usager, calculer l'empreinte et mettre à jour les valeurs minimales de chaque variable
+            for (const usagerId of usagers) {
+                const empreinte = await this.calculEmpreinteByVariable(usagerId, companyId, empreinteId, quizId);
+
+                // Mettre à jour les valeurs minimales de chaque variable
+                for (const [variableId, valeur] of Object.entries(empreinte)) {
+                    if (!(variableId in minimumPointsByVariable) || valeur < minimumPointsByVariable[variableId]) {
+                        minimumPointsByVariable[variableId] = valeur;
+                    }
+                }
+            }
+
+            return minimumPointsByVariable;
+        } catch (error) {
+            console.error("Une erreur est survenue lors du calcul des points minimums par variable:", error);
+            throw error;
+        }
+    }
+
+    async getMaximumPointsByVariable(companyId, quizId, empreinteId) {
+        try {
+            // Récupérer tous les usagers ayant répondu au quiz donné
+            const usagers = await Answer.distinct('usagerId', { quizId });
+
+            // Tableau pour stocker les valeurs maximales de chaque variable
+            const maximumPointsByVariable = {};
+
+            // Pour chaque usager, calculer l'empreinte et mettre à jour les valeurs maximales de chaque variable
+            for (const usagerId of usagers) {
+                const empreinte = await this.calculEmpreinteByVariable(usagerId, companyId, empreinteId, quizId);
+
+                // Mettre à jour les valeurs maximales de chaque variable
+                for (const [variableId, valeur] of Object.entries(empreinte)) {
+                    if (!(variableId in maximumPointsByVariable) || valeur > maximumPointsByVariable[variableId]) {
+                        maximumPointsByVariable[variableId] = valeur;
+                    }
+                }
+            }
+
+            return maximumPointsByVariable;
+        } catch (error) {
+            console.error("Une erreur est survenue lors du calcul des points maximums par variable:", error);
+            return null;
+        }
+    }
+
+    async calculEmpreinteByVariable(usagerId, companyId, empreinteId, quizId) {
+        try {
+            // Récupérer toutes les réponses de l'usager pour le quiz donné
+            const reponses = await Answer.find({ quizId, usagerId }).lean();
+
+            // Tableaux pour stocker les valeurs des questions et des propositions
+            const valueQuestion = {};
+            const valueProposition = {};
+
+            // Calculer la valeur de réponse pour chaque question répondue par l'usager
+            const propositionPromises = reponses.map(async reponse => {
+                const propositionId = reponse.propositionId;
+                const proposition = await Proposition.findById(propositionId).lean();
+                const questionId = proposition.questionId.toString();
+
+                // Retourner un objet contenant l'ID de la question et la valeur de la proposition
+                return { questionId, propositionValue: proposition.value, responseValue: reponse.value };
+            });
+
+            const propositionsResults = await Promise.all(propositionPromises);
+
+            propositionsResults.forEach(result => {
+                const { questionId, propositionValue, responseValue } = result;
+
+                // Ajouter la valeur de la proposition à la question correspondante
+                valueProposition[questionId] = (valueProposition[questionId] || 0) + propositionValue;
+
+                // Ajouter la valeur de réponse de la proposition à la question
+                const valeurReponse = responseValue ? 7 : 1;
+                valueQuestion[questionId] = (valueQuestion[questionId] || 0) + valeurReponse;
+            });
+
+            // Calculer la valeur de chaque facteur
+            const facteurs = await this.getFactorsOfFootprint(empreinteId);
+            const valeurFacteurs = {};
+
+            const questionPromises = facteurs.map(async facteur => {
+                const questions = await Question.find({ factorId: facteur._id }).lean();
+
+                let facteurValue = 0;
+                questions.forEach(question => {
+                    const questionId = question._id.toString();
+                    const valueProp = valueProposition[questionId] || 0;
+                    const valueQuest = valueQuestion[questionId] || 0;
+
+                    // Si les valeurs sont égales, ajouter 7 sinon ajouter 1
+                    facteurValue += (valueProp === valueQuest) ? 7 : 1;
+                });
+
+                valeurFacteurs[facteur._id] = facteurValue;
+            });
+
+            await Promise.all(questionPromises);
+
+            // Récupérer les poids associés aux facteurs
+            const weights = await Weight.find({ company: companyId }).lean();
+
+            // Créer un objet pour stocker les poids les plus récents attribués par la company aux facteurs
+            const facteurLatestWeights = {};
+            weights.forEach(weight => {
+                const factorId = weight.factorId.toString(); // Convertir en chaîne pour la comparaison
+                if (!facteurLatestWeights[factorId] || weight.createdAt > facteurLatestWeights[factorId].createdAt) {
+                    facteurLatestWeights[factorId] = weight;
+                }
+            });
+
+            // Récupérer les valeurs des poids par défaut des facteurs
+            const defaultWeights = await Weight.find({}).lean();
+
+            // Créer un objet pour stocker les valeurs par défaut des poids des facteurs
+            const defaultFacteurWeights = {};
+            defaultWeights.forEach(weight => {
+                const factorId = weight.factorId.toString(); // Convertir en chaîne pour la comparaison
+                if (!defaultFacteurWeights[factorId] || weight.createdAt > defaultFacteurWeights[factorId].createdAt) {
+                    defaultFacteurWeights[factorId] = weight.defaultWeight;
+                }
+            });
+
+            // Créer un tableau pour stocker les points de chaque variable
+            const pointsByVariable = {};
+
+            // Calculer les points de chaque variable en fonction des valeurs des facteurs
+            for (const [facteurId, facteurValue] of Object.entries(valeurFacteurs)) {
+                const weight = facteurLatestWeights[facteurId];
+                const factorWeight = weight ? weight.value : (defaultFacteurWeights[facteurId] || 6); // Utiliser le poids le plus récent attribué par la company, sinon utiliser le poids par défaut
+                const totalWeight = factorWeight;
+
+                // Calculer les points pour chaque variable en fonction des valeurs des facteurs et des poids
+                const points = facteurValue / totalWeight;
+
+                // Ajouter les points de la variable correspondante
+                const variableId = (await Factor.findById(facteurId).select('variableId').lean()).variableId.toString();
+                pointsByVariable[variableId] = points;
+            }
+
+            return pointsByVariable;
+        } catch (error) {
+            console.error("Une erreur est survenue lors du calcul des points pour chaque variable:", error);
+            return null;
+        }
+    }
+
+
+
 }
 
 const calculPointRepository = new CaculPointRepository();

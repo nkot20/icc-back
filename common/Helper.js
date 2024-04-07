@@ -1,7 +1,13 @@
 const bcrypt = require('bcryptjs');
 const base64Img = require('base64-img');
-const fs = require('fs');
 const config = require('../config/config.js');
+//Required package
+const pdf = require("pdf-creator-node");
+const fs = require("fs");
+// Read HTML Template
+const template = fs.readFileSync("./templates/Certificat/page.html", "utf8");
+const QRCode = require('qrcode');
+const mustache = require('mustache');
 
 module.exports = class Helper {
   static async apiSuccessResponse(data, message = '') {
@@ -120,5 +126,51 @@ module.exports = class Helper {
       data: paginatedItems,
       totalDocs: items.length,
     };
+  }
+
+  static printCertificatTrainingImprint(datas, idQuiz, idUsager) {
+    try {
+      const html = mustache.render(template, datas);
+      let document = {
+        html: html,
+        data: {
+          user: datas,
+        },
+        path: "./public/certificats/formation/"+idQuiz+"_"+idUsager+".pdf",
+        type: "",
+      };
+      const options = {
+        format: "A4",
+        orientation: "portrait",
+        border: "1mm",
+        header: {
+          height: "10mm",
+        },
+        footer: {
+          height: "5mm",
+        }
+      };
+      pdf
+          .create(document, options)
+          .then((res) => {
+            console.log(res);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static generateQrCode(datas, idUsager, idQuiz) {
+    QRCode.toFile('./public/qrcode/'+idQuiz+'_'+idUsager+'.png', JSON.stringify(datas), {
+      errorCorrectionLevel: 'H',
+      width: 150,
+      height: 150
+    }, function(err) {
+      if (err) throw err;
+      console.log('QR code saved!');
+    });
   }
 };

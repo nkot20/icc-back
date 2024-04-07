@@ -4,6 +4,7 @@ const Usager = require('../models/Usager');
 const Quiz = require('../models/Quiz');
 const calculPointRepository = require('../repositories/CaculPointRepository');
 const {ObjectId} = require("mongodb");
+const Helper = require('../common/Helper');
 
 
 class AnswerRepository {
@@ -35,13 +36,47 @@ class AnswerRepository {
                 return await Answer.create(value);
             });
             const answers = await Promise.all(promises);
-            return await calculPointRepository.calculEmpreinte(resultUsager._id, quiz.companyId, '660ef07d12bd44b5e6ae8085',quizId);
-
+            let quizzInfos = await Quiz.findById(quizId);
+            let points = await calculPointRepository.calculEmpreinte(resultUsager._id, quiz.companyId, '660ef07d12bd44b5e6ae8085',quizId);
+            Helper.generateQrCode({
+                date: this.formatDate(new Date()),
+                nom: resultUsager.civilite +' '+ resultUsager.first_name+' '+resultUsager.last_name,
+                formation: quizzInfos.title,
+                points: points
+            }, resultUsager._id, quizId);
+            Helper.printCertificatTrainingImprint({
+                date: this.formatDate(new Date()),
+                dateExpiration: this.formatDate(this.addYearsToDate(new Date(),1)),
+                lastname: resultUsager.civilite + ' '+resultUsager.last_name,
+                firstname: resultUsager.first_name,
+                formation: quizzInfos.title,
+                points: Math.floor(points),
+                qrcode: process.env.HOSTNAME+'/qrcode/'+quizId+'_'+resultUsager._id+'.png',
+                logocavie: process.env.HOSTNAME+'/logos/cavie_logo.jpg',
+                logoprepa: process.env.HOSTNAME+'/logos/logo_prepa.jpg',
+                diamantlogo: process.env.HOSTNAME+'/logos/diamant_logo.jpg',
+                humanbetlogo: process.env.HOSTNAME+'/logos/humanbet_logo.jpg',
+                mmlogo: process.env.HOSTNAME+'/logos/mm_logo.jpg',
+            }, quizId, resultUsager._id)
+            return points;
         } catch (error) {
             console.error(error)
             throw error;
         }
 
+    }
+
+     formatDate(date) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+    addYearsToDate(date, yearsToAdd) {
+        const newDate = new Date(date); // Crée une copie de la date d'origine
+        newDate.setFullYear(newDate.getFullYear() + yearsToAdd); // Ajoute le nombre d'années spécifié
+        return newDate;
     }
 
 }
