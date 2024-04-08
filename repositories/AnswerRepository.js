@@ -52,11 +52,13 @@ class AnswerRepository {
                 formation: quizzInfos.title,
                 points: Math.floor(points),
                 qrcode: process.env.HOSTNAME+'/qrcode/'+quizId+'_'+resultUsager._id+'.png',
-                logocavie: process.env.HOSTNAME+'/logos/cavie_logo.jpg',
-                logoprepa: process.env.HOSTNAME+'/logos/logo_prepa.jpg',
+                logoentetegauche: process.env.HOSTNAME+'/logos/accelerate-africa.PNG',
+                logoentetedroit: process.env.HOSTNAME+'/logos/wellbin.PNG',
                 diamantlogo: process.env.HOSTNAME+'/logos/diamant_logo.jpg',
                 humanbetlogo: process.env.HOSTNAME+'/logos/humanbet_logo.jpg',
                 mmlogo: process.env.HOSTNAME+'/logos/mm_logo.jpg',
+                signature1: process.env.HOSTNAME+'/logos/signaturebossou.PNG',
+                signature2: process.env.HOSTNAME+'/logos/signaturemondo.PNG',
             }, quizId, resultUsager._id)
             return points;
         } catch (error) {
