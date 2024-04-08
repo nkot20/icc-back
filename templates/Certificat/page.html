@@ -25,7 +25,6 @@
             border-bottom: 10px solid #C0C0C0;
             border-right: 10px solid #C0C0C0;
             padding: 10px;
-
         }
 
         h1,
@@ -38,15 +37,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-top: -18px;
         }
 
         .text {
             width: auto;
             text-align: justify;
             color: #BFBFBE;
-            margin-top: -15px;
+            margin-top: -2%;
         }
+
     </style>
 </head>
 
@@ -54,41 +53,49 @@
     <div id="bord1">
         <div id="bord2">
             <div id="entete">
-                <img src="{{logocavie}}" width="170px" height="170px" />
-                <img src="{{logoprepa}}" width="170px" height="170px"
+                <img src="{{logoentetegauche}}" width="250px" height="170px" />
+                <img src="{{logoentetedroit}}" width="170px" height="170px"
                      style="position: absolute; right: 0%; padding-right: 30px;" />
             </div>
-            <h2 style="margin-top: -10px">CERTIFICAT</h2>
+            <h2 style="margin-top: -1%">CERTIFICATE</h2>
             <p id="intro">
-                Vu l'évaluation du {{date}} <br/>
-                Vu la décision du {{date}} qui en a résulté
+                Given the assessment of  {{date}} <br/>
+                Given the decision of {{date}} that resulted from it
             </p>
             <p>
-            <h1 style="text-transform: uppercase;">empreinte formation</h1>
+            <h1 style="text-transform: uppercase;">Trainning imprint</h1>
             <div class="">
-                <img src="{{diamantlogo}}" style="margin-left: 35%" width="200px" height="200px" />
+                <img src="{{diamantlogo}}" style="margin-left: 35%; margin-top: -2%;" width="200px" height="200px" />
             </div>
-            <p> est décerné à </p>
+            <p> is awarded to </p>
             <h1 style="text-transform: uppercase;">{{lastname}} <span style="text-transform: capitalize;"> {{firstname}}</span>
             </h1>
             </p>
             <p>
-                Pour vérifier l'authenticité de ce score <br/><br/>
+                To verify the authenticity of this score <br/><br/>
                 <img src="{{qrcode}}" alt="QRcode" style="width: 150px;height: 150px;" /><br/><br/>
-                Date d'expiration {{dateExpiration}}
+                Expiration date {{dateExpiration}}
             </p><br />
             <p class="text">
-                Ce certificat demeurera en vigueur jusqu'à sa fin de validité à moins d'avis contraire,
-                à condition que la mise en place et la conformité aux exigences de référentiels d'amélioration continue
-                soient jugées satisfaisantes lors des audits de surveillance et que les conditions générales
-                d'utilisation
-                et la charte éthique soient observées.
+                This certificate will remain valid until its expiry unless otherwise notified,
+                provided that the implementation and compliance with continuous improvement framework
+                requirements are deemed satisfactory during surveillance audits
+                , and provided that the general terms of use and ethical charter are observed.
             </p>
-            <div id="footer">
+            <div id="footer" style="margin-top: -2.5%">
                 <div id="image_footer">
                     <img src="{{humanbetlogo}}" width="130px" height="100px" />
                     <img src="{{mmlogo}}" width="130px" height="100px"
                          style="position: absolute; right: 0%; padding-right: 30px;" />
+                </div>
+                <div id="sign_footer" style="overflow: hidden;">
+                    <h3 style="color: #BFBFBE; float: left;">Dr Mathias MONDO</h3>
+                    <h3 style="color: #BFBFBE; float: right;">Jean Philippe BOSSOU</h3>
+                </div>
+                <div>
+                    <img src="{{signature2}}" width="50px" height="50px"/>
+                    <img src="{{signature1}}"width="50px" height="50px"
+                         style="position: absolute; right: 0%; padding-right: 30px;"/>
                 </div>
                 <p style="font-style: italic;    color: #BFBFBE;">
                     Des informations complémentaires concernant son champ d'application sont disponibles sur demande,
