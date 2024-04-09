@@ -115,5 +115,6 @@ jobs:
             npm install
             pm2 remove app1
             pm2 start npm --name "app1" -- start
+            w pm2 logs app1
             w pm2 show app1
-            pm2 logs app1
+            
