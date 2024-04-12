@@ -14,7 +14,7 @@ class UsagerRepository {
             // Pour chaque usager ayant répondu au quiz, calculer le nombre de points
             await Promise.all(distinctReponses.map(async (usagerId) => {
                 // Calculer le nombre de points pour cet usager en utilisant la fonction calculFinalPoint
-                const points = await calculPointRepository.calculEmpreinte(usagerId, companyId, empreinteId, quizId);
+                const points = await calculPointRepository.calculImprintUser(usagerId, companyId, empreinteId, quizId);
                 pointsUsagers[usagerId] = points;
             }));
 

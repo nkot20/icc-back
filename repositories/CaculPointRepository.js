@@ -6,6 +6,7 @@ const Weight = require('../models/Weight');
 const Proposition = require('../models/Proposition');
 const Question = require('../models/Question');
 const Footprint = require('../models/Footprint');
+const {response} = require("express");
 
 class CaculPointRepository {
 
@@ -237,7 +238,7 @@ class CaculPointRepository {
             // Rechercher les facteurs associés à ces variables
             const factors = await Factor.find({ variableId: { $in: variableIds } });
 
-            return factors;
+            return {factors, variables};
         } catch (error) {
             console.error('Une erreur est survenue lors de la récupération des facteurs de l\'empreinte:', error);
             throw error;
@@ -400,6 +401,145 @@ class CaculPointRepository {
         }
     }
 
+    async calculImprintUser(usagerId, companyId, empreinteId, quizId) {
+        try {
+            // Récupérer toutes les réponses de l'usager pour le quiz donné
+            const reponses = await Answer.find({ quizId, usagerId }).lean();
+
+            // Tableaux pour stocker les valeurs des questions et des propositions
+            const valueQuestion = [];
+
+            // Calculer la valeur de réponse pour chaque question répondue par l'usager
+            const questionsValuePromises = reponses.map(async response => {
+                const propositionId = response.propositionId;
+                const proposition = await Proposition.findById(propositionId).lean();
+                const questionId = proposition.questionId.toString();
+                //console.log(questionId)
+                let value = 0;
+                if (response.value)
+                    value = 7;
+                else
+                    value = 1;
+                if (questionId.toString() === '6613a700fe3452d1a2cefcef') {
+                    console.log(questionId, response.value, proposition.value, value)
+                }
+                if (proposition.value === value) {
+                    return {questionId, value: 7};
+                } else  {
+                    return {questionId, value: 1};
+                }
+            });
+            const questionsValue = await Promise.all(questionsValuePromises);
+
+            const uniqueQuestionIds = [...new Set(questionsValue.map(item => item.questionId))];
+
+            uniqueQuestionIds.forEach(questionId => {
+                const valuesForQuestion = questionsValue.filter(item => item.questionId === questionId).map(item => item.value);
+                //console.log(valuesForQuestion)
+                // Vérifier si toutes les valeurs pour ce questionId sont égales à 7
+                //console.log(questionId, valuesForQuestion)
+                const allValuesAreSeven = valuesForQuestion.every(value => value === 7);
+
+                // Déterminer la valeur à ajouter au tableau en fonction du résultat précédent
+                const valueToAdd = allValuesAreSeven ? 7 : 1;
+
+                valueQuestion.push({ questionId, value: valueToAdd });
+            });
+
+            //console.log(valueQuestion)
+            // Calculer la valeur de chaque facteur
+            const {factors, variables} = await this.getFactorsOfFootprint(empreinteId);
+
+            // Créer un tableau pour stocker les promesses de recherche de questions
+            const questionPromises = factors.map(async (factor) => {
+                // Obtenir toutes les questions associées à ce facteur
+                const questions = await Question.find({ factorId: factor._id });
+                return { factor, questions };
+            });
+
+            // Attendre que toutes les promesses de recherche de questions soient résolues
+            const results = await Promise.all(questionPromises);
+
+            // Créer un tableau pour stocker les valeurs moyennes des facteurs
+            const factorAverageValues = [];
+
+            // Parcourir les résultats pour calculer les valeurs moyennes des facteurs
+            for (const result of results) {
+                const { factor, questions } = result;
+
+                let totalValue = 0;
+                let validQuestionsCount = 0;
+
+                // Parcourir chaque question associée à ce facteur
+                for (const question of questions) {
+                    // Recherchez la valeur correspondante dans le tableau questionsValues
+                    const questionValueObject = valueQuestion.find(obj => String(obj.questionId) === String(question._id));
+
+                    // Si la valeur correspondante est trouvée, ajoutez-la à la somme
+                    if (questionValueObject) {
+                        totalValue += questionValueObject.value;
+                        validQuestionsCount++;
+                    }
+                }
+
+                // Calculer la moyenne des valeurs des questions associées à ce facteur
+                const averageValue = validQuestionsCount > 0 ? totalValue / validQuestionsCount : 0;
+
+                // Ajouter la valeur moyenne calculée au tableau des valeurs moyennes des facteurs
+                factorAverageValues.push({ factor, value: averageValue });
+            }
+
+            //console.log(factorAverageValues)
+
+            const factorValuesPromise  = factorAverageValues.map(async (factorAverage) => {
+                const latestWeight = await Weight.findOne({ companyId, factorId: factorAverage.factor._id }).sort({ createdAt: -1 });
+                if (latestWeight) {
+                    // Retourner le poids trouvé s'il existe
+                    return {factor: factorAverage.factor, value: factorAverage.value * latestWeight.value};
+                } else {
+                    // Retourner le poids par défaut du facteur s'il est trouvé
+                    return {factor: factorAverage.factor, value: factorAverage.value * factorAverage.factor.dafaultWeight};
+                }
+            });
+
+
+
+            const factorsValue = await Promise.all(factorValuesPromise);
+
+            //console.log(factorsValue)
+
+            const variablesValues = [];
+
+            for (const variable of variables) {
+                //const factorsVariable = factorsValue.find(factor => factor.factor.variableId === variable._id);
+
+                let count = 0;
+                let value = 0;
+                factorsValue.forEach(factorValue => {
+                   if (factorValue.factor.variableId.toString() === variable._id.toString()) {
+                       value =  value + factorValue.value;
+                       count ++;
+                   }
+                })
+                variablesValues.push({variable, value: value/count})
+            }
+
+            console.log(variablesValues)
+
+            let finalValue = 0;
+            for (const variablesValue of variablesValues) {
+                finalValue =  finalValue + variablesValue.value
+            }
+
+
+            return ((finalValue)*7)
+
+
+        } catch (error) {
+            console.error("Une erreur est survenue lors du calcul des points pour chaque variable:", error);
+            return null;
+        }
+    }
 
 
 }
