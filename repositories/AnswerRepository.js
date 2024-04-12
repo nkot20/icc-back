@@ -37,7 +37,7 @@ class AnswerRepository {
             });
             const answers = await Promise.all(promises);
             let quizzInfos = await Quiz.findById(quizId);
-            let points = await calculPointRepository.calculEmpreinte(resultUsager._id, quiz.companyId, '660ef07d12bd44b5e6ae8085',quizId);
+            let points = await calculPointRepository.calculImprintUser(resultUsager._id, quiz.companyId, '660ef07d12bd44b5e6ae8085',quizId);
             Helper.generateQrCode({
                 date: this.formatDate(new Date()),
                 nom: resultUsager.civilite +' '+ resultUsager.first_name+' '+resultUsager.last_name,
