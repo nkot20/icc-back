@@ -113,5 +113,7 @@ jobs:
           script: |
             cd ${{ secrets.DEPLOY_PATH }}
             npm install
-            pm2 reload app1
+            pm2 remove app1
+            pm2 start npm --name "app1" -- start
             w pm2 show app1
+            pm2 logs app1
