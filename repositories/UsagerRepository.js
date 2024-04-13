@@ -23,13 +23,13 @@ class UsagerRepository {
             const usagersAvecPoints = await Promise.all(distinctReponses.map(async (usagerId) => {
                 // Récupérer les informations de l'usager
                 const usager = await Usager.findById(usagerId).lean();
-                await Helper.generateQrCode({
+                Helper.generateQrCode({
                     date: this.formatDate(new Date()),
                     nom: usager.civilite +' '+ usager.first_name+' '+usager.last_name,
                     formation: usager.title,
                     points: pointsUsagers[usagerId]
                 }, usager._id, quizId);
-                await Helper.exportWebsiteAsPdf({
+                Helper.exportWebsiteAsPdf({
                     date: this.formatDate(new Date()),
                     dateExpiration: this.formatDate(this.addYearsToDate(new Date(),1)),
                     lastname: usager.civilite + ' '+usager.last_name,
@@ -44,7 +44,9 @@ class UsagerRepository {
                     mmlogo: process.env.HOSTNAME+'/logos/mm_logo.jpg',
                     signature1: process.env.HOSTNAME+'/logos/signaturebossou.PNG',
                     signature2: process.env.HOSTNAME+'/logos/signaturemondo.PNG',
-                }, quizId, usager._id)
+                }, quizId, usager._id).then(value => {
+                    console.log(value)
+                })
                 // Renvoyer l'usager avec le nombre de points
                 return {
                     ...usager,
