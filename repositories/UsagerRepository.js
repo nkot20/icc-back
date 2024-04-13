@@ -1,6 +1,7 @@
 const Usager = require('../models/Usager');
 const calculPointRepository = require('../repositories/CaculPointRepository');
 const Answer = require('../models/Answer');
+const Helper = require("../common/Helper");
 class UsagerRepository {
 
     async getListeUsagersRepondusAuQuizz(quizId, companyId, empreinteId) {
@@ -22,7 +23,28 @@ class UsagerRepository {
             const usagersAvecPoints = await Promise.all(distinctReponses.map(async (usagerId) => {
                 // Récupérer les informations de l'usager
                 const usager = await Usager.findById(usagerId).lean();
-
+                await Helper.generateQrCode({
+                    date: this.formatDate(new Date()),
+                    nom: usager.civilite +' '+ usager.first_name+' '+usager.last_name,
+                    formation: usager.title,
+                    points: pointsUsagers[usagerId]
+                }, usager._id, quizId);
+                await Helper.exportWebsiteAsPdf({
+                    date: this.formatDate(new Date()),
+                    dateExpiration: this.formatDate(this.addYearsToDate(new Date(),1)),
+                    lastname: usager.civilite + ' '+usager.last_name,
+                    firstname: usager.first_name,
+                    formation: usager.title,
+                    points: Math.floor(pointsUsagers[usagerId]),
+                    qrcode: process.env.HOSTNAME+'/qrcode/'+quizId+'_'+usager._id+'.png',
+                    logoentetegauche: process.env.HOSTNAME+'/logos/accelerate-africa.jpg',
+                    logoentetedroit: process.env.HOSTNAME+'/logos/wellbin.PNG',
+                    diamantlogo: process.env.HOSTNAME+'/logos/diamant_logo.jpg',
+                    humanbetlogo: process.env.HOSTNAME+'/logos/humanbet_logo.jpg',
+                    mmlogo: process.env.HOSTNAME+'/logos/mm_logo.jpg',
+                    signature1: process.env.HOSTNAME+'/logos/signaturebossou.PNG',
+                    signature2: process.env.HOSTNAME+'/logos/signaturemondo.PNG',
+                }, quizId, usager._id)
                 // Renvoyer l'usager avec le nombre de points
                 return {
                     ...usager,
@@ -51,6 +73,19 @@ class UsagerRepository {
             console.error("Une erreur est survenue lors de la récupération de la liste des usagers:", error);
             return [];
         }
+    }
+
+    formatDate(date) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+    addYearsToDate(date, yearsToAdd) {
+        const newDate = new Date(date); // Crée une copie de la date d'origine
+        newDate.setFullYear(newDate.getFullYear() + yearsToAdd); // Ajoute le nombre d'années spécifié
+        return newDate;
     }
 
 }
