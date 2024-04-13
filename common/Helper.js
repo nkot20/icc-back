@@ -188,7 +188,7 @@ module.exports = class Helper {
 
       await page.setContent(html, { waitUntil: 'domcontentloaded' });
 
-      await page.waitForSelector('img', { timeout: 20000 });
+      await page.waitForSelector('img', { timeout: 30000 });
 
       // To reflect CSS used for screens instead of print
       await page.emulateMediaType('screen');
