@@ -5,6 +5,10 @@ const template = fs.readFileSync("templates/Certificat/page.html", "utf8");
 const QRCode = require('qrcode');
 const mustache = require("mustache");
 
+const puppeteer = require('puppeteer');
+
+
+
 QRCode.toFile('./public/qrcode.png', 'Test coco', {
     errorCorrectionLevel: 'H',
     width: 150, // Largeur en pixels
@@ -63,7 +67,7 @@ function addYearsToDate(date, yearsToAdd) {
     newDate.setFullYear(newDate.getFullYear() + yearsToAdd); // Ajoute le nombre d'années spécifié
     return newDate;
 }
-printCertificatTrainingImprint({
+/*printCertificatTrainingImprint({
     date: formatDate(new Date()),
     dateExpiration: formatDate(addYearsToDate(new Date(),1)),
     lastname: "NKOT-A-NZOK ",
@@ -78,4 +82,55 @@ printCertificatTrainingImprint({
     mmlogo: 'http://localhost:4002/logos/mm_logo.jpg',
     signature1: 'http://localhost:4002/logos/signaturebossou.PNG',
     signature2: 'http://localhost:4002/logos/signaturemondo.PNG',
-});
+});*/
+
+
+async function exportWebsiteAsPdf(data, outputPath) {
+    const html = mustache.render(template, data);
+    // Create a browser instance
+    const browser = await puppeteer.launch({
+        headless: 'new'
+    });
+
+    // Create a new page
+    const page = await browser.newPage();
+
+    await page.setContent(html, { waitUntil: 'domcontentloaded' });
+
+    await page.waitForSelector('img', { timeout: 20000 });
+
+    // To reflect CSS used for screens instead of print
+    await page.emulateMediaType('screen');
+
+    // Download the PDF
+    const PDF = await page.pdf({
+        path: outputPath,
+        margin: { top: '5px', right: '0px', bottom: '5px', left: '0px' },
+        printBackground: true,
+        format: 'A4',
+    });
+
+    // Close the browser instance
+    await browser.close();
+
+    return PDF;
+}
+
+ exportWebsiteAsPdf({
+    date: formatDate(new Date()),
+    dateExpiration: formatDate(addYearsToDate(new Date(),1)),
+    lastname: "NKOT-A-NZOK ",
+    firstname: "ETIENNE",
+    formation: "Formation en entrepreneuriat",
+    points: Math.floor(187.2555),
+    qrcode: 'http://localhost:4002/qrcode/660d25b29a9135d349467bb8_6612c6cf292f7856070a4e49.png',
+    logoentetegauche: 'http://localhost:4002/logos/accelerate-africa.jpg',
+    logoentetedroit: 'http://localhost:4002/logos/wellbin.PNG',
+    diamantlogo: 'http://localhost:4002/logos/diamant_logo.jpg',
+    humanbetlogo: 'http://localhost:4002/logos/humanbet_logo.jpg',
+    mmlogo: 'http://localhost:4002/logos/mm_logo.jpg',
+    signature1: 'http://localhost:4002/logos/signaturebossou.PNG',
+    signature2: 'http://localhost:4002/logos/signaturemondo.PNG',
+}, "./public/certificats/formation/test.pdf").then(value => {
+     console.log(value)
+ })

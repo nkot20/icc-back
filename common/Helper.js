@@ -7,7 +7,8 @@ const fs = require("fs");
 // Read HTML Template
 const template = fs.readFileSync("./templates/Certificat/page.html", "utf8");
 const QRCode = require('qrcode');
-const mustache = require('mustache');
+const mustache = require('mustache')
+const puppeteer = require('puppeteer');
 
 module.exports = class Helper {
   static async apiSuccessResponse(data, message = '') {
@@ -173,4 +174,36 @@ module.exports = class Helper {
       console.log('QR code saved!');
     });
   }
+
+  static async exportWebsiteAsPdf(data, idQuiz, idUsager) {
+    const html = mustache.render(template, data);
+    // Create a browser instance
+    const browser = await puppeteer.launch({
+      headless: 'new'
+    });
+
+    // Create a new page
+    const page = await browser.newPage();
+
+    await page.setContent(html, { waitUntil: 'domcontentloaded' });
+
+    await page.waitForSelector('img', { timeout: 20000 });
+
+    // To reflect CSS used for screens instead of print
+    await page.emulateMediaType('screen');
+
+    // Download the PDF
+    const PDF = await page.pdf({
+      path: "./public/certificats/formation/"+idQuiz+"_"+idUsager+".pdf",
+      margin: { top: '5px', right: '0px', bottom: '5px', left: '0px' },
+      printBackground: true,
+      format: 'A4',
+    });
+
+    // Close the browser instance
+    await browser.close();
+
+    return PDF;
+  }
+
 };

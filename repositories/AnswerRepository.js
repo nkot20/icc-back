@@ -44,7 +44,7 @@ class AnswerRepository {
                 formation: quizzInfos.title,
                 points: points
             }, resultUsager._id, quizId);
-            Helper.printCertificatTrainingImprint({
+            await Helper.exportWebsiteAsPdf({
                 date: this.formatDate(new Date()),
                 dateExpiration: this.formatDate(this.addYearsToDate(new Date(),1)),
                 lastname: resultUsager.civilite + ' '+resultUsager.last_name,
@@ -52,7 +52,7 @@ class AnswerRepository {
                 formation: quizzInfos.title,
                 points: Math.floor(points),
                 qrcode: process.env.HOSTNAME+'/qrcode/'+quizId+'_'+resultUsager._id+'.png',
-                logoentetegauche: process.env.HOSTNAME+'/logos/accelerate-africa.PNG',
+                logoentetegauche: process.env.HOSTNAME+'/logos/accelerate-africa.jpg',
                 logoentetedroit: process.env.HOSTNAME+'/logos/wellbin.PNG',
                 diamantlogo: process.env.HOSTNAME+'/logos/diamant_logo.jpg',
                 humanbetlogo: process.env.HOSTNAME+'/logos/humanbet_logo.jpg',
