@@ -420,9 +420,7 @@ class CaculPointRepository {
                     value = 7;
                 else
                     value = 1;
-                if (questionId.toString() === '6613a700fe3452d1a2cefcef') {
-                    console.log(questionId, response.value, proposition.value, value)
-                }
+
                 if (proposition.value === value) {
                     return {questionId, value: 7};
                 } else  {
@@ -537,9 +535,67 @@ class CaculPointRepository {
 
         } catch (error) {
             console.error("Une erreur est survenue lors du calcul des points pour chaque variable:", error);
-            return null;
+            throw error;
         }
     }
+
+    async calculImprintUserImprove(usagerId, companyId, empreinteId, quizId) {
+        try {
+            // Récupérer toutes les réponses de l'usager pour le quiz donné
+            const reponses = await Answer.find({ quizId, usagerId }).lean();
+
+            // Tableau pour stocker les valeurs des questions
+            const valueQuestion = new Map();
+
+            // Calculer la valeur de réponse pour chaque question répondue par l'usager
+            for (const response of reponses) {
+                const propositionId = response.propositionId;
+                const proposition = await Proposition.findById(propositionId).lean();
+                const questionId = proposition.questionId.toString();
+                const value = response.value ? 7 : 1;
+                if (proposition.value === value) {
+                    valueQuestion.set(questionId, 7);
+                } else  {
+                    valueQuestion.set(questionId, 1);
+                }
+
+            }
+
+            // Récupérer les facteurs et les questions associées à l'empreinte
+            const { factors, variables } = await this.getFactorsOfFootprint(empreinteId);
+
+            // Calculer les valeurs moyennes des facteurs
+            const factorAverageValues = factors.map(async (factor) => {
+                const questions = await Question.find({ factorId: factor._id });
+                const validQuestions = questions.filter(question => valueQuestion.has(question._id.toString()));
+                const totalValue = validQuestions.reduce((acc, question) => acc + valueQuestion.get(question._id.toString()), 0);
+                const averageValue = validQuestions.length > 0 ? totalValue / validQuestions.length : 0;
+                return { factor, value: averageValue };
+            });
+
+            // Récupérer les poids des facteurs
+            const factorWeights = await Promise.allSettled(factorAverageValues.map(async (factorAverage) => {
+                const latestWeight = await Weight.findOne({ companyId, factorId: factorAverage.factor._id }).sort({ createdAt: -1 });
+                return latestWeight ? factorAverage.value * latestWeight.value : factorAverage.value * factorAverage.factor.dafaultWeight;
+            }));
+
+            // Calculer les valeurs des variables
+            const variablesValues = variables.map(variable => {
+                const factorsForVariable = factorWeights.filter(factorWeight => factorWeight.factor.variableId.toString() === variable._id.toString());
+                const value = factorsForVariable.reduce((acc, factorWeight) => acc + factorWeight.value, 0) / factorsForVariable.length;
+                return { variable, value };
+            });
+
+            // Calculer la valeur finale
+            const finalValue = variablesValues.reduce((acc, variableValue) => acc + variableValue.value, 0);
+
+            return finalValue * 7;
+        } catch (error) {
+            console.error("Une erreur est survenue lors du calcul des points pour chaque variable:", error);
+            throw error;
+        }
+    }
+
 
 
 }
