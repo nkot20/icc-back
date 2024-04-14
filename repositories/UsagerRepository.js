@@ -2,6 +2,7 @@ const Usager = require('../models/Usager');
 const calculPointRepository = require('../repositories/CaculPointRepository');
 const Answer = require('../models/Answer');
 const Helper = require("../common/Helper");
+const fs = require("fs");
 class UsagerRepository {
 
     async getListeUsagersRepondusAuQuizz(quizId, companyId, empreinteId) {
@@ -36,14 +37,14 @@ class UsagerRepository {
                     firstname: usager.first_name,
                     formation: usager.title,
                     points: Math.floor(pointsUsagers[usagerId]),
-                    qrcode: process.env.HOSTNAME+'/qrcode/'+quizId+'_'+usager._id+'.png',
-                    logoentetegauche: process.env.HOSTNAME+'/logos/accelerate-africa.jpg',
-                    logoentetedroit: process.env.HOSTNAME+'/logos/wellbin.PNG',
-                    diamantlogo: process.env.HOSTNAME+'/logos/diamant_logo.jpg',
-                    humanbetlogo: process.env.HOSTNAME+'/logos/humanbet_logo.jpg',
-                    mmlogo: process.env.HOSTNAME+'/logos/mm_logo.jpg',
-                    signature1: process.env.HOSTNAME+'/logos/signaturebossou.PNG',
-                    signature2: process.env.HOSTNAME+'/logos/signaturemondo.PNG',
+                    qrcode: this.imageFileToBase64('./public/qrcode/'+quizId+'_'+usager._id+'.png'),
+                    logoentetegauche: this.imageFileToBase64('./public/logos/accelerate-africa.jpg'),
+                    logoentetedroit: this.imageFileToBase64('./public/logos/wellbin.PNG'),
+                    diamantlogo: this.imageFileToBase64('./public/logos/diamant_logo.jpg'),
+                    humanbetlogo: this.imageFileToBase64('./public/logos/humanbet_logo.jpg'),
+                    mmlogo: this.imageFileToBase64('./public/logos/mm_logo.jpg'),
+                    signature1: this.imageFileToBase64('./public/logos/signaturebossou.PNG'),
+                    signature2: this.imageFileToBase64('./public/logos/signaturemondo.PNG'),
                 }, quizId, usager._id).then(value => {
                     console.log(value)
                 })
@@ -88,6 +89,21 @@ class UsagerRepository {
         const newDate = new Date(date); // Crée une copie de la date d'origine
         newDate.setFullYear(newDate.getFullYear() + yearsToAdd); // Ajoute le nombre d'années spécifié
         return newDate;
+    }
+
+    imageFileToBase64(filePath) {
+        try {
+            // Lire le fichier image depuis le chemin relatif
+            const imageData = fs.readFileSync(filePath);
+
+            // Convertir les données en base64
+            const base64 = Buffer.from(imageData).toString('base64');
+            console.log(base64)
+            return base64;
+        } catch (error) {
+            console.error('Erreur lors de la conversion de l\'image en base64 :', error.message);
+            return null;
+        }
     }
 
 }
