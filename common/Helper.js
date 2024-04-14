@@ -196,7 +196,7 @@ module.exports = class Helper {
       // Download the PDF
       const PDF = await page.pdf({
         path: "./public/certificats/formation/"+idQuiz+"_"+idUsager+".pdf",
-        margin: { top: '5px', right: '0px', bottom: '5px', left: '0px' },
+        margin: { top: '5px', right: '10px', bottom: '5px', left: '10px' },
         printBackground: true,
         format: 'A4',
       });

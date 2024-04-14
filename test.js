@@ -4,7 +4,7 @@ const fs = require("fs");
 const template = fs.readFileSync("templates/Certificat/page.html", "utf8");
 const QRCode = require('qrcode');
 const mustache = require("mustache");
-
+const axios = require('axios');
 const puppeteer = require('puppeteer');
 
 
@@ -123,14 +123,29 @@ async function exportWebsiteAsPdf(data, outputPath) {
     firstname: "ETIENNE",
     formation: "Formation en entrepreneuriat",
     points: Math.floor(187.2555),
-    qrcode: 'http://localhost:4002/qrcode/660d25b29a9135d349467bb8_6612c6cf292f7856070a4e49.png',
-    logoentetegauche: 'http://localhost:4002/logos/accelerate-africa.jpg',
-    logoentetedroit: 'http://localhost:4002/logos/wellbin.PNG',
-    diamantlogo: 'http://localhost:4002/logos/diamant_logo.jpg',
-    humanbetlogo: 'http://localhost:4002/logos/humanbet_logo.jpg',
-    mmlogo: 'http://localhost:4002/logos/mm_logo.jpg',
-    signature1: 'http://localhost:4002/logos/signaturebossou.PNG',
-    signature2: 'http://localhost:4002/logos/signaturemondo.PNG',
+    qrcode: imageFileToBase64('./public/qrcode/660d25b29a9135d349467bb8_6612c6cf292f7856070a4e49.png'),
+    logoentetegauche: imageFileToBase64('./public/logos/accelerate-africa.jpg'),
+    logoentetedroit: imageFileToBase64('./public/logos/wellbin.PNG'),
+    diamantlogo: imageFileToBase64('./public/logos/diamant_logo.jpg'),
+    humanbetlogo: imageFileToBase64('./public/logos/humanbet_logo.jpg'),
+    mmlogo: imageFileToBase64('./public/logos/mm_logo.jpg'),
+    signature1: imageFileToBase64('./public/logos/signaturebossou.PNG'),
+    signature2: imageFileToBase64('./public/logos/signaturemondo.PNG'),
 }, "./public/certificats/formation/test.pdf").then(value => {
      console.log(value)
  })
+
+function imageFileToBase64(filePath) {
+    try {
+        // Lire le fichier image depuis le chemin relatif
+        const imageData = fs.readFileSync(filePath);
+
+        // Convertir les données en base64
+        const base64 = Buffer.from(imageData).toString('base64');
+        console.log(base64)
+        return base64;
+    } catch (error) {
+        console.error('Erreur lors de la conversion de l\'image en base64 :', error.message);
+        return null;
+    }
+}
