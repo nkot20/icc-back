@@ -67,7 +67,7 @@ class UsagerRepository {
             // Récupérer les informations de l'usager
             const usager = await Usager.findById(usagerId).lean();
             // Créer un objet pour stocker le nombre de points de chaque usager
-            const points = await calculPointRepository.calculEmpreinte(usagerId, companyId, empreinteId, quizId);
+            const points = await calculPointRepository.calculImprintUser(usagerId, companyId, empreinteId, quizId);
             return {
                 ...usager,
                 points: Math.floor(points) || 0 // Si l'usager n'a pas de points calculés, mettre 0
