@@ -117,6 +117,33 @@ class VariableRepository {
         }
     }
 
+    // add children to variable
+    async addChildrenToVariable(parentVariableId, datas) {
+        try {
+            // Trouver la variable parent
+            const variable = await Variable.create(datas);
+            if (!variable) {
+                throw new Error('Error when registring variable')
+            }
+
+            const parentVariable = await Variable.findById(parentVariableId);
+            if (!parentVariable) {
+                throw new Error('Parent Variable not found');
+            }
+
+            // Ajouter les enfants à la variable parent
+            parentVariable.children.push(...variable._id);
+
+            // Enregistrer la variable parent mise à jour
+            return await parentVariable.save();
+
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
+
 }
 
 const variableRepository = new VariableRepository();

@@ -1,11 +1,11 @@
 const Joi = require('joi');
 const express = require('express');
-const usagerRepository = require('../../repositories/UsagerRepository');
-const validateSchema = require('../../middlewares/validationSchema');
+const usagerRepository = require('../../../repositories/UsagerRepository');
+const validateSchema = require('../../../middlewares/validationSchema');
 const router = express.Router();
-const logger = require('../../logger');
-const quizRepository = require("../../repositories/QuizRepository");
-const calculPointsRepository = require('../../repositories/CaculPointRepository');
+const logger = require('../../../logger');
+const quizRepository = require("../../../repositories/QuizRepository");
+const calculPointsRepository = require('../../../repositories/CaculPointRepository');
 
 router.get('/quiz/:id/:company', async (req, res) => {
     try {

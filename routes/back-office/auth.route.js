@@ -3,16 +3,16 @@ const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const Joi = require('joi');
 const config = require('dotenv').config();
-const authMiddleware = require('../middlewares/authenticate.middleware');
-const User = require('../models/User');
-const logger = require('../logger');
-const ROLE = require('../config/role');
-const companyRepository = require('../repositories/companyRepository');
+const authMiddleware = require('../../middlewares/authenticate.middleware');
+const User = require('../../models/User');
+const logger = require('../../logger');
+const ROLE = require('../../config/role');
+const companyRepository = require('../../repositories/companyRepository');
 
 const timestamp = new Date();
 
-const authController = require('../controllers/auth/auth.controller');
-const validateSchema = require('../middlewares/validationSchema');
+const authController = require('../../controllers/auth/auth.controller');
+const validateSchema = require('../../middlewares/validationSchema');
 
 const router = express.Router();
 

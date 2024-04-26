@@ -1,10 +1,10 @@
 const Joi = require('joi');
 const express = require('express');
-const validateSchema = require('../../middlewares/validationSchema');
+const validateSchema = require('../../../middlewares/validationSchema');
 const router = express.Router();
-const logger = require('../../logger');
-const authMiddleware = require('../../middlewares/authenticate.middleware');
-const propositionRepository = require('../../repositories/PropositionRepository')
+const logger = require('../../../logger');
+const authMiddleware = require('../../../middlewares/authenticate.middleware');
+const propositionRepository = require('../../../repositories/PropositionRepository')
 const propositionCreateSchema = Joi.object({
     label: Joi.string().required(),
     value: Joi.number().required(),

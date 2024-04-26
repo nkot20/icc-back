@@ -1,11 +1,11 @@
 const Joi = require('joi');
 const express = require('express');
-const answerRepository = require('../../repositories/AnswerRepository');
-const validateSchema = require('../../middlewares/validationSchema');
+const answerRepository = require('../../../repositories/AnswerRepository');
+const validateSchema = require('../../../middlewares/validationSchema');
 const router = express.Router();
-const logger = require('../../logger');
-const authMiddleware = require('../../middlewares/authenticate.middleware');
-const calculPointRepository = require('../../repositories/CaculPointRepository');
+const logger = require('../../../logger');
+const authMiddleware = require('../../../middlewares/authenticate.middleware');
+const calculPointRepository = require('../../../repositories/CaculPointRepository');
 
 router.post('/', async (req, res) => {
     try {
