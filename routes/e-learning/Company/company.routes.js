@@ -1,12 +1,12 @@
 const Joi = require('joi');
 const express = require('express');
-const companyUserRepository = require('../../repositories/companyUserRepository');
-const companyRepository = require('../../repositories/companyRepository');
-const validateSchema = require('../../middlewares/validationSchema');
+const companyUserRepository = require('../../../repositories/companyUserRepository');
+const companyRepository = require('../../../repositories/companyRepository');
+const validateSchema = require('../../../middlewares/validationSchema');
 const router = express.Router();
-const Roles = require('../../config/role');
-const logger = require('../../logger');
-const authMiddleware = require('../../middlewares/authenticate.middleware'); // changed previous middleware tokenValidate with this one
+const Roles = require('../../../config/role');
+const logger = require('../../../logger');
+const authMiddleware = require('../../../middlewares/authenticate.middleware'); // changed previous middleware tokenValidate with this one
 
 
 const CompanyCreateSchema = Joi.object({

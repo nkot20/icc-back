@@ -1,9 +1,9 @@
 const Joi = require('joi');
 const express = require('express');
-const quizRepository = require('../../repositories/QuizRepository');
-const validateSchema = require('../../middlewares/validationSchema');
+const quizRepository = require('../../../repositories/QuizRepository');
+const validateSchema = require('../../../middlewares/validationSchema');
 const router = express.Router();
-const logger = require('../../logger');
+const logger = require('../../../logger');
 
 const QuizzCreateSchema = Joi.object({
     companyId: Joi.string().required(),

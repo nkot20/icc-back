@@ -1,11 +1,11 @@
 const Joi = require('joi');
 const express = require('express');
-const footprintRepository = require('../../repositories/FootprintRepository');
-const variableRepository = require('../../repositories/VariableRepository');
-const validateSchema = require('../../middlewares/validationSchema');
+const footprintRepository = require('../../../repositories/FootprintRepository');
+const variableRepository = require('../../../repositories/VariableRepository');
+const validateSchema = require('../../../middlewares/validationSchema');
 const router = express.Router();
-const logger = require('../../logger');
-const authMiddleware = require('../../middlewares/authenticate.middleware');
+const logger = require('../../../logger');
+const authMiddleware = require('../../../middlewares/authenticate.middleware');
 const footprintCreateSchema = Joi.object({
     name: Joi.string().required(),
 });

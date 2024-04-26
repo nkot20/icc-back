@@ -1,12 +1,12 @@
 const Joi = require('joi');
 const express = require('express');
-const footprintRepository = require('../../repositories/FootprintRepository');
-const variableRepository = require('../../repositories/VariableRepository');
-const validateSchema = require('../../middlewares/validationSchema');
+const footprintRepository = require('../../../repositories/FootprintRepository');
+const variableRepository = require('../../../repositories/VariableRepository');
+const validateSchema = require('../../../middlewares/validationSchema');
 const router = express.Router();
-const logger = require('../../logger');
-const authMiddleware = require('../../middlewares/authenticate.middleware');
-const questionRepository = require('../../repositories/QuestionRepository')
+const logger = require('../../../logger');
+const authMiddleware = require('../../../middlewares/authenticate.middleware');
+const questionRepository = require('../../../repositories/QuestionRepository')
 const questionCreateSchema = Joi.object({
     label: Joi.string().required(),
     type: Joi.string().required(),
